@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DEBUG_REBIRTH
+#define DEBUG_REBIRTH
 #include <Windows.h>
 #include <cstdio>
 
@@ -20,3 +21,5 @@ namespace debug
 		FreeConsole();
 	}
 }
+
+#endif

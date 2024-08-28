@@ -53,7 +53,7 @@ void mainThread(const HINSTANCE hinstDLL)
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
-
+   
 	hooks::shutdownHooks();
 	debug::shutdownConsole();
 

@@ -81,6 +81,7 @@ void hooks::enableHooks()
 
 void hooks::shutdownHooks()
 {
+	hooks::unhookMouse(1);
 	MH_DisableHook(MH_ALL_HOOKS);
 	if (hooks::initSuccess == MH_OK)
 		MH_Uninitialize();
@@ -126,6 +127,11 @@ BOOL WINAPI detours::detourWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 		case WM_LBUTTONUP:
 		case WM_RBUTTONDOWN:
 		case WM_RBUTTONUP:
+		case WM_MBUTTONDBLCLK:
+		case WM_MBUTTONDOWN:
+		case WM_MBUTTONUP:
+		case WM_MOUSEWHEEL:
+		case WM_MOUSEHWHEEL:
 			return 0;
 		}
 	}

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef HOOKS_REBIRTH
+#define HOOKS_REBIRTH
+
 #include "../minhook/MinHook.h"
 #include "data.h"
 
@@ -9,20 +11,20 @@ namespace hooks
 	typedef int(__cdecl* SDL_SetRelativeMouseMode)(unsigned int mode);
 	typedef void(__fastcall* mousemove)(int idx, int idy);
 
-	static MH_STATUS initSuccess;
+	inline MH_STATUS initSuccess;
 
 	// unhookMouse(0) : Disable ingame mouse input
 	// unhookMouse(1) : Enable ingame mouse input
-	static const SDL_SetRelativeMouseMode unhookMouse = reinterpret_cast<SDL_SetRelativeMouseMode>(GetProcAddress(GetModuleHandle(L"SDL2.dll"), "SDL_SetRelativeMouseMode"));
+	inline const SDL_SetRelativeMouseMode unhookMouse = reinterpret_cast<SDL_SetRelativeMouseMode>(GetProcAddress(GetModuleHandle(L"SDL2.dll"), "SDL_SetRelativeMouseMode"));
 
-	static wglSwapBuffers originalSwapBuffers{ nullptr };
-	static const wglSwapBuffers targetSwapBuffers = reinterpret_cast<wglSwapBuffers>(GetProcAddress(GetModuleHandle(L"opengl32.dll"), "wglSwapBuffers"));
+	inline wglSwapBuffers originalSwapBuffers{ nullptr };
+	inline const wglSwapBuffers targetSwapBuffers = reinterpret_cast<wglSwapBuffers>(GetProcAddress(GetModuleHandle(L"opengl32.dll"), "wglSwapBuffers"));
 
-	static WndProc originalWndProc{ nullptr };
-	static const WndProc targetWndProc = reinterpret_cast<WndProc>(GetWindowLongPtr(FindWindow(NULL, L"AssaultCube"), GWLP_WNDPROC)); // most AC won't detect FindWindow
+	inline WndProc originalWndProc{ nullptr };
+	inline const WndProc targetWndProc = reinterpret_cast<WndProc>(GetWindowLongPtr(FindWindow(NULL, L"AssaultCube"), GWLP_WNDPROC)); // most AC won't detect FindWindow
 
-	static mousemove originalMouseMove{ nullptr };
-	static const mousemove targetMouseMove = reinterpret_cast<mousemove>(offsets::mousemove);
+	inline mousemove originalMouseMove{ nullptr };
+	inline const mousemove targetMouseMove = reinterpret_cast<mousemove>(offsets::mousemove);
 
 	void initHooks();
 	void createHooks();
@@ -36,3 +38,5 @@ namespace detours
 	BOOL WINAPI detourWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	void __fastcall detourMouseMove(int idx, int idy);
 }
+
+#endif

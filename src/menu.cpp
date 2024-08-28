@@ -1,4 +1,4 @@
-#include "menu.h"
+#include "esp.h"
 #include "menu.h"
 #include "data.h"
 #include "hooks.h"
@@ -9,6 +9,7 @@
 
 #include <Windows.h>
 #include <gl/GL.h>
+
 #pragma comment(lib, "opengl32.lib")
 
 void gui::createContext(HDC hdc)
@@ -49,10 +50,64 @@ void gui::startRender()
 
 void gui::menu()
 {
-    ImGui::SetNextWindowSize(ImVec2(500, 300), ImGuiCond_Once);
-	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
-    ImGui::Begin("Rebirth", &gui::showMenu);
-    ImGui::Text("Hello, World!");
+    ImGui::SetNextWindowSize(ImVec2(400, 250), ImGuiCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(50, 50), ImGuiCond_Once);
+
+    ImGui::Begin("Rebirth", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoCollapse);
+    
+    if (ImGui::BeginTabBar("Menu", ImGuiTabBarFlags_DrawSelectedOverline | ImGuiTabBarFlags_NoCloseWithMiddleMouseButton))
+    {
+        if (ImGui::BeginTabItem("hack"))
+        {
+			
+
+			ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("visual"))
+        {
+			if (ImGui::CollapsingHeader("esp"))
+			{
+				ImGui::Checkbox("draw", &esp::toggle::drawESP);
+
+                ImGui::Checkbox("box", &esp::toggle::box); ImGui::SameLine(ImGui::GetContentRegionAvail().x * 0.5f); ImGui::SetNextItemWidth(-FLT_MIN);
+				ImGui::ColorEdit3("box color", esp::color::box, ImGuiColorEditFlags_NoLabel);
+				ImGui::Checkbox("name", &esp::toggle::name); ImGui::SameLine(ImGui::GetContentRegionAvail().x * 0.5f); ImGui::SetNextItemWidth(-FLT_MIN);
+				ImGui::ColorEdit3("name color", esp::color::name, ImGuiColorEditFlags_NoLabel);
+				ImGui::Checkbox("health", &esp::toggle::health);
+				ImGui::Checkbox("armor", &esp::toggle::armor);
+				ImGui::Checkbox("distance", &esp::toggle::distance); ImGui::SameLine(ImGui::GetContentRegionAvail().x * 0.5f); ImGui::SetNextItemWidth(-FLT_MIN);
+				ImGui::ColorEdit3("distance color", esp::color::distance, ImGuiColorEditFlags_NoLabel);
+			}
+
+            if (ImGui::CollapsingHeader("fov"))
+            {
+                ImGui::Checkbox("draw", &esp::toggle::drawFov);
+				ImGui::RadioButton("circle", &esp::setting::fovType, 0); ImGui::SameLine();
+				ImGui::RadioButton("rectangle", &esp::setting::fovType, 1); ImGui::SameLine(ImGui::GetContentRegionAvail().x * 0.5f); ImGui::SetNextItemWidth(-FLT_MIN);
+				ImGui::ColorEdit3("fov color", esp::color::fov, ImGuiColorEditFlags_NoLabel);
+            }
+
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("misc"))
+        {
+
+
+            ImGui::EndTabItem();
+        }
+
+        if (ImGui::BeginTabItem("test"))
+        {
+
+
+            ImGui::EndTabItem();
+        }
+
+        ImGui::EndTabBar();
+    }
+
     ImGui::End();
 }
 

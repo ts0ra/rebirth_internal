@@ -4,6 +4,8 @@
 #include "../imgui/imgui_impl_opengl2.h"
 #include "../imgui/imgui_impl_win32.h"
 
+#include <iostream>
+
 void esp::draw()
 {
 	if (esp::toggle::name)
@@ -20,6 +22,7 @@ void esp::draw()
 
 	if (esp::toggle::distance)
 		esp::drawDistance();
+
 }
 
 void esp::drawName()

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef MENU_GUI_REBIRTH
+#define MENU_GUI_REBIRTH
+
 #include <Windows.h>
 
 namespace gui
@@ -17,3 +19,5 @@ namespace gui
 	void toggleMenu();
 }
 
+
+#endif

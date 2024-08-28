@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DATA_REBIRTH
+#define DATA_REBIRTH
 #include <Windows.h>
 #include <cstdint>
 // Created with ReClass.NET 1.2 by KN4CK3R
@@ -148,3 +149,5 @@ namespace offsets
 	constexpr std::uintptr_t mousemove = 0x4BF780;
 
 }
+
+#endif
