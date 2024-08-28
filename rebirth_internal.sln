@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35208.52
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "rebirth_internal", "rebirth_internal.vcxproj", "{D6AFFDA7-CADF-4E08-88A9-7D4090BCCD2F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D6AFFDA7-CADF-4E08-88A9-7D4090BCCD2F}.Debug|x64.ActiveCfg = Debug|x64
+		{D6AFFDA7-CADF-4E08-88A9-7D4090BCCD2F}.Debug|x64.Build.0 = Debug|x64
+		{D6AFFDA7-CADF-4E08-88A9-7D4090BCCD2F}.Debug|x86.ActiveCfg = Debug|Win32
+		{D6AFFDA7-CADF-4E08-88A9-7D4090BCCD2F}.Debug|x86.Build.0 = Debug|Win32
+		{D6AFFDA7-CADF-4E08-88A9-7D4090BCCD2F}.Release|x64.ActiveCfg = Release|x64
+		{D6AFFDA7-CADF-4E08-88A9-7D4090BCCD2F}.Release|x64.Build.0 = Release|x64
+		{D6AFFDA7-CADF-4E08-88A9-7D4090BCCD2F}.Release|x86.ActiveCfg = Release|Win32
+		{D6AFFDA7-CADF-4E08-88A9-7D4090BCCD2F}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0F021295-56DB-4C15-8C51-4513F077E97E}
+	EndGlobalSection
+EndGlobal
