@@ -8,6 +8,8 @@
 #include <Windows.h>
 #include <gl/GL.h>
 
+#pragma comment(lib, "opengl32.lib")
+
 void gui::createContext(HDC hdc)
 {
 	data::hWindow = WindowFromDC(hdc);

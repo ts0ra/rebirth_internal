@@ -2,6 +2,8 @@
 #include "../minhook/MinHook.h"
 #include "data.h"
 
+#pragma comment(lib, "libMinHook.x86.lib")
+
 namespace hooks
 {
 	typedef LRESULT(CALLBACK* WndProc)(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);

@@ -1,19 +1,10 @@
 #include <Windows.h>
 #include <thread>
 
-#include "MinHook.h"
-#include "data.h"
-#include "typedefhooks.h"
 #include "console.h"
 #include "hooks.h"
 #include "menu.h"
 
-#include "../imgui/imgui.h"
-#include "../imgui/imgui_impl_opengl2.h"
-#include "../imgui/imgui_impl_win32.h"
-
-#pragma comment(lib, "libMinHook.x86.lib")
-#pragma comment(lib, "opengl32.lib")
 
 // Forward
 void mainThread(const HINSTANCE hinstDLL);
