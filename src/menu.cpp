@@ -49,7 +49,9 @@ void gui::startRender()
 
 void gui::menu()
 {
-    ImGui::Begin("Example Menu");
+    ImGui::SetNextWindowSize(ImVec2(500, 300), ImGuiCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Once);
+    ImGui::Begin("Rebirth", &gui::showMenu);
     ImGui::Text("Hello, World!");
     ImGui::End();
 }

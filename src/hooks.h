@@ -7,7 +7,7 @@ namespace hooks
 	typedef LRESULT(CALLBACK* WndProc)(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	typedef BOOL(__stdcall* wglSwapBuffers)(HDC hdc);
 	typedef int(__cdecl* SDL_SetRelativeMouseMode)(unsigned int mode);
-	//typedef void(__fastcall* mousemove)(int idx, int idy);
+	typedef void(__fastcall* mousemove)(int idx, int idy);
 
 	static MH_STATUS initSuccess;
 
@@ -19,7 +19,10 @@ namespace hooks
 	static const wglSwapBuffers targetSwapBuffers = reinterpret_cast<wglSwapBuffers>(GetProcAddress(GetModuleHandle(L"opengl32.dll"), "wglSwapBuffers"));
 
 	static WndProc originalWndProc{ nullptr };
-	static const WndProc targetWndProc = reinterpret_cast<WndProc>(GetWindowLongPtr(FindWindow(NULL, L"AssaultCube"), GWLP_WNDPROC)); // find a way for this to work
+	static const WndProc targetWndProc = reinterpret_cast<WndProc>(GetWindowLongPtr(FindWindow(NULL, L"AssaultCube"), GWLP_WNDPROC)); // most AC won't detect FindWindow
+
+	static mousemove originalMouseMove{ nullptr };
+	static const mousemove targetMouseMove = reinterpret_cast<mousemove>(offsets::mousemove);
 
 	void initHooks();
 	void createHooks();
@@ -31,4 +34,5 @@ namespace detours
 {
 	BOOL __stdcall detourSwapBuffers(HDC hdc);
 	BOOL WINAPI detourWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	void __fastcall detourMouseMove(int idx, int idy);
 }

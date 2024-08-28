@@ -43,7 +43,16 @@ void hooks::createHooks()
 	else
 		std::cout << "WndProc hook created\n";
 
-
+	// mousemove
+	MH_STATUS createMouseMove = MH_CreateHook(
+		reinterpret_cast<LPVOID>(hooks::targetMouseMove),
+		&detours::detourMouseMove,
+		reinterpret_cast<LPVOID*>(&hooks::originalMouseMove)
+	);
+	if (createMouseMove != MH_OK)
+		std::cout << "Failed to create MouseMove hook\n";
+	else
+		std::cout << "MouseMove hook created\n";
 }
 
 void hooks::enableHooks()
@@ -61,6 +70,13 @@ void hooks::enableHooks()
 		std::cout << "Failed to enable WndProc hook\n";
 	else
 		std::cout << "WndProc hook enabled\n";
+
+	// mousemove
+	MH_STATUS enableMouseMove = MH_EnableHook(hooks::targetMouseMove);
+	if (enableMouseMove != MH_OK)
+		std::cout << "Failed to enable MouseMove hook\n";
+	else
+		std::cout << "MouseMove hook enabled\n";
 }
 
 void hooks::shutdownHooks()
@@ -115,4 +131,12 @@ BOOL WINAPI detours::detourWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 	}
 
 	return CallWindowProc(hooks::originalWndProc, hwnd, msg, wParam, lParam);
+}
+
+void __fastcall detours::detourMouseMove(int idx, int idy)
+{
+	if (gui::showMenu)
+		return;
+
+	hooks::originalMouseMove(idx, idy);
 }

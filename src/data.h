@@ -144,4 +144,7 @@ namespace offsets
 	//ac_client.exe+5C4D6 - 0F8D D5000000         - jnl ac_client.exe+5C5B1 radar hack minimap
 	//ac_client.exe+5C606 - F3 0F7E 46 04         - movq xmm0,[esi+04]
 
+	// function offsets
+	constexpr std::uintptr_t mousemove = 0x4BF780;
+
 }
