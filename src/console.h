@@ -4,7 +4,7 @@
 
 namespace debug
 {
-	FILE* fDummy; // Don't use this variable, its just a dummy!
+	inline FILE* fDummy; // Don't use this variable, its just a dummy!
 
 	void initConsole()
 	{

@@ -1,4 +1,5 @@
 #pragma once
+#include <Windows.h>
 #include <cstdint>
 // Created with ReClass.NET 1.2 by KN4CK3R
 
@@ -95,7 +96,7 @@ public:
 
 namespace data
 {
-	HWND hWindow{ nullptr };
+	inline HWND hWindow{ nullptr };
 }
 
 namespace offsets

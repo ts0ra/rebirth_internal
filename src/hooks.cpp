@@ -1,5 +1,4 @@
 #include "hooks.h"
-#include "data.h"
 #include "menu.h"
 #include "esp.h"
 
@@ -7,6 +6,7 @@
 
 #include <iostream>
 
+#pragma comment(lib, "libMinHook.x86.lib")
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 void hooks::initHooks()
@@ -31,6 +31,7 @@ void hooks::createHooks()
 	else
 		std::cout << "SwapBuffers hook created\n";
 
+
 	// wndproc
 	MH_STATUS createWndProc = MH_CreateHook(
 		reinterpret_cast<LPVOID>(hooks::targetWndProc),
@@ -41,16 +42,20 @@ void hooks::createHooks()
 		std::cout << "Failed to create WndProc hook\n";
 	else
 		std::cout << "WndProc hook created\n";
+
+
 }
 
 void hooks::enableHooks()
 {
+	// swapbuffers
 	MH_STATUS enableSwapBuffers = MH_EnableHook(hooks::targetSwapBuffers);
 	if (enableSwapBuffers != MH_OK)
 		std::cout << "Failed to enable SwapBuffers hook\n";
 	else
 		std::cout << "SwapBuffers hook enabled\n";
 
+	// wndproc
 	MH_STATUS enableWndProc = MH_EnableHook(hooks::targetWndProc);
 	if (enableWndProc != MH_OK)
 		std::cout << "Failed to enable WndProc hook\n";

@@ -1,5 +1,7 @@
 #include "menu.h"
+#include "menu.h"
 #include "data.h"
+#include "hooks.h"
 
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_impl_opengl2.h"
@@ -7,7 +9,6 @@
 
 #include <Windows.h>
 #include <gl/GL.h>
-
 #pragma comment(lib, "opengl32.lib")
 
 void gui::createContext(HDC hdc)
@@ -30,6 +31,7 @@ void gui::createContext(HDC hdc)
     ImGuiIO& io = ImGui::GetIO();
     io.IniFilename = NULL;
     io.LogFilename = NULL;
+    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableSetMousePos;
     ImGui::StyleColorsDark();
 
     ImGui_ImplWin32_Init(data::hWindow);
@@ -63,4 +65,12 @@ void gui::shutdownContext()
     ImGui_ImplOpenGL2_Shutdown();
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
+}
+
+void gui::toggleMenu()
+{
+	gui::showMenu = !gui::showMenu;
+	//ImGui::GetIO().WantCaptureMouse = gui::showMenu;
+	//ImGui::GetIO().MouseDrawCursor = gui::showMenu;
+    hooks::unhookMouse(!gui::showMenu);
 }

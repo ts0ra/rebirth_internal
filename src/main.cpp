@@ -44,11 +44,11 @@ void mainThread(const HINSTANCE hinstDLL)
 	hooks::createHooks();
 	hooks::enableHooks();
 
-    while (!GetAsyncKeyState(VK_END))
+    while (!GetAsyncKeyState(VK_END) & 1)
     {
-		if (GetAsyncKeyState(VK_INSERT))
+		if (GetAsyncKeyState(VK_INSERT) & 1)
 		{
-			gui::showMenu = !gui::showMenu;
+            gui::toggleMenu();
 		}
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1));

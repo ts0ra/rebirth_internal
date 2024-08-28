@@ -2,8 +2,6 @@
 #include "../minhook/MinHook.h"
 #include "data.h"
 
-#pragma comment(lib, "libMinHook.x86.lib")
-
 namespace hooks
 {
 	typedef LRESULT(CALLBACK* WndProc)(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -15,13 +13,13 @@ namespace hooks
 
 	// unhookMouse(0) : Disable ingame mouse input
 	// unhookMouse(1) : Enable ingame mouse input
-	static SDL_SetRelativeMouseMode unhookMouse = reinterpret_cast<SDL_SetRelativeMouseMode>(GetProcAddress(GetModuleHandle(L"SDL2.dll"), "SDL_SetRelativeMouseMode"));
+	static const SDL_SetRelativeMouseMode unhookMouse = reinterpret_cast<SDL_SetRelativeMouseMode>(GetProcAddress(GetModuleHandle(L"SDL2.dll"), "SDL_SetRelativeMouseMode"));
 
 	static wglSwapBuffers originalSwapBuffers{ nullptr };
-	static wglSwapBuffers targetSwapBuffers = reinterpret_cast<wglSwapBuffers>(GetProcAddress(GetModuleHandle(L"opengl32.dll"), "wglSwapBuffers"));
+	static const wglSwapBuffers targetSwapBuffers = reinterpret_cast<wglSwapBuffers>(GetProcAddress(GetModuleHandle(L"opengl32.dll"), "wglSwapBuffers"));
 
 	static WndProc originalWndProc{ nullptr };
-	static WndProc targetWndProc = reinterpret_cast<WndProc>(GetWindowLongPtr(data::hWindow, GWLP_WNDPROC));
+	static const WndProc targetWndProc = reinterpret_cast<WndProc>(GetWindowLongPtr(FindWindow(NULL, L"AssaultCube"), GWLP_WNDPROC)); // find a way for this to work
 
 	void initHooks();
 	void createHooks();

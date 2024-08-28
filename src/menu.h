@@ -3,15 +3,17 @@
 
 namespace gui
 {
-	bool isContextCreated{ false };
-	HGLRC gameContext{ nullptr };
-	HGLRC myContext{ nullptr };
-	bool showMenu{ false };
+	inline bool isContextCreated{ false };
+	inline HGLRC gameContext{ nullptr };
+	inline HGLRC myContext{ nullptr };
+	inline bool showMenu{ false };
 
 	void createContext(HDC hdc);
 	void startRender();
 	void menu();
 	void endRender();
 	void shutdownContext();
+
+	void toggleMenu();
 }
 
