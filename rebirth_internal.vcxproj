@@ -155,10 +155,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\esp.cpp" />
-    <ClCompile Include="src\hack.cpp" />
-    <ClCompile Include="src\menu.cpp" />
-    <ClCompile Include="src\hooks.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -166,14 +162,13 @@
     <ClCompile Include="imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\esp.cpp" />
+    <ClCompile Include="src\hack.cpp" />
+    <ClCompile Include="src\hooks.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\menu.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\console.h" />
-    <ClInclude Include="src\esp.h" />
-    <ClInclude Include="src\hack.h" />
-    <ClInclude Include="src\menu.h" />
-    <ClInclude Include="src\hooks.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_opengl2.h" />
@@ -183,7 +178,12 @@
     <ClInclude Include="imgui\imstb_textedit.h" />
     <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="minhook\MinHook.h" />
+    <ClInclude Include="src\console.h" />
     <ClInclude Include="src\data.h" />
+    <ClInclude Include="src\esp.h" />
+    <ClInclude Include="src\hack.h" />
+    <ClInclude Include="src\hooks.h" />
+    <ClInclude Include="src\menu.h" />
     <ClInclude Include="src\typedefhooks.h" />
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,6 @@
 #pragma once
 #include "../minhook/MinHook.h"
+#include "data.h"
 
 namespace hooks
 {
@@ -14,8 +15,11 @@ namespace hooks
 	// unhookMouse(1) : Enable ingame mouse input
 	static SDL_SetRelativeMouseMode unhookMouse = reinterpret_cast<SDL_SetRelativeMouseMode>(GetProcAddress(GetModuleHandle(L"SDL2.dll"), "SDL_SetRelativeMouseMode"));
 
-	static wglSwapBuffers targetSwapBuffers = reinterpret_cast<wglSwapBuffers>(GetProcAddress(GetModuleHandle(L"opengl32.dll"), "wglSwapBuffers"));
 	static wglSwapBuffers originalSwapBuffers{ nullptr };
+	static wglSwapBuffers targetSwapBuffers = reinterpret_cast<wglSwapBuffers>(GetProcAddress(GetModuleHandle(L"opengl32.dll"), "wglSwapBuffers"));
+
+	static WndProc originalWndProc{ nullptr };
+	static WndProc targetWndProc = reinterpret_cast<WndProc>(GetWindowLongPtr(data::hWindow, GWLP_WNDPROC));
 
 	void initHooks();
 	void createHooks();
