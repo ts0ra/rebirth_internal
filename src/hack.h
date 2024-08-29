@@ -2,9 +2,8 @@
 #define HACK_REBIRTH
 
 
-
 namespace hack
 {
-
+	
 }
 #endif

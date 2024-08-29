@@ -11,6 +11,11 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 
 void hooks::initHooks()
 {
+	data::hWndGame = FindWindow(NULL, L"AssaultCube");
+	GetClientRect(data::hWndGame, &data::rectGame);
+	data::widthGame = data::rectGame.right - data::rectGame.left;
+	data::heightGame = data::rectGame.bottom - data::rectGame.top;
+
 	hooks::initSuccess = MH_Initialize();
 	if (hooks::initSuccess != MH_OK)
 		std::cout << "Failed to initialize MinHook\n";

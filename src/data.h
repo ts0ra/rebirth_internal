@@ -1,17 +1,15 @@
 #ifndef DATA_REBIRTH
 #define DATA_REBIRTH
+
+#include "utils.h"
+
 #include <Windows.h>
 #include <cstdint>
+#include <vector>
 // Created with ReClass.NET 1.2 by KN4CK3R
 
-struct Vector3
+struct entity
 {
-	float x, y, z;
-};
-
-class entList
-{
-public:
 	int16_t x; //0x0000
 	int16_t y; //0x0002
 	int16_t z; //0x0004
@@ -26,13 +24,12 @@ public:
 	char pad_0010[2]; //0x0010
 }; //Size: 0x0012
 
-class playerEnt
+struct playerEnt
 {
-public:
 	char pad_0000[4]; //0x0000
-	Vector3 playerHeadPos; //0x0004
+	Vector3 headPos; //0x0004
 	char pad_0010[24]; //0x0010
-	Vector3 playerFootPos; //0x0028
+	Vector3 footPos; //0x0028
 	Vector3 viewAngles; //0x0034
 	char pad_0040[172]; //0x0040
 	int32_t health; //0x00EC
@@ -44,17 +41,16 @@ public:
 	char pad_0310[8]; //0x0310
 	bool isDead; //0x0318
 	char pad_0319[75]; //0x0319
-	class currentWpnObj* ptrToCurrentWeaponObj; //0x0364
+	struct currentWpnObj* ptrToCurrentWeaponObj; //0x0364
 	char pad_0368[3440]; //0x0368
 }; //Size: 0x10D8
 
-class currentWpnObj
+struct currentWpnObj
 {
-public:
 	char pad_0000[4]; //0x0000
 	int32_t gunId; //0x0004
 	char pad_0008[4]; //0x0008
-	class weaponStruct* ptrToCurrentWeaponStruct; //0x000C
+	struct weaponStruct* ptrToCurrentWeaponStruct; //0x000C
 	int32_t* ptrToReserveAmmo; //0x0010
 	int32_t* ptrToLoadedAmmo; //0x0014
 	int32_t* ptrToWeaponDelay; //0x0018
@@ -62,15 +58,8 @@ public:
 	char pad_0020[320]; //0x0020
 }; //Size: 0x0160
 
-class knifeObj
+struct weapon
 {
-public:
-	char pad_0000[48]; //0x0000
-}; //Size: 0x0030
-
-class weaponStruct
-{
-public:
 	char modelName[23]; //0x0000
 	char weaponName[42]; //0x0017
 	char pad_0041[1]; //0x0041
@@ -95,10 +84,10 @@ public:
 	bool isAuto; //0x0066
 }; //Size: 0x0067
 
-namespace data
+struct playerListPtr
 {
-	inline HWND hWindow{ nullptr };
-}
+	playerEnt* player[32];
+};
 
 namespace offsets
 {
@@ -148,6 +137,24 @@ namespace offsets
 	// function offsets
 	constexpr std::uintptr_t mousemove = 0x4BF780;
 
+}
+
+namespace data
+{
+	inline HWND hWndGame{ nullptr };
+	inline RECT rectGame{ 0, 0, 0, 0 };
+	inline int widthGame{ 0 };
+	inline int heightGame{ 0 };
+
+	namespace game
+	{
+		inline std::uintptr_t baseAddress = reinterpret_cast<std::uintptr_t>(GetModuleHandle(L"ac_client.exe"));
+		inline playerListPtr* playerList = *reinterpret_cast<playerListPtr**>(data::game::baseAddress + offsets::playersEntityList); // use index to access player playerList[i]
+		inline playerEnt* localPlayer = *reinterpret_cast<playerEnt**>(data::game::baseAddress + offsets::localPlayerEntity);
+		inline float* viewMatrix = reinterpret_cast<float*>(data::game::baseAddress + offsets::viewMatrix); // 16 float
+		inline int* gameMode = reinterpret_cast<int*>(data::game::baseAddress + offsets::gameMode);
+		inline int* totalPlayer = reinterpret_cast<int*>(data::game::baseAddress + offsets::totalPlayer);
+	}
 }
 
 #endif

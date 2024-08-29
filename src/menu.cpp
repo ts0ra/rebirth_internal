@@ -14,7 +14,6 @@
 
 void gui::createContext(HDC hdc)
 {
-	data::hWindow = WindowFromDC(hdc);
     gui::myContext = wglCreateContext(hdc);
     wglMakeCurrent(hdc, myContext);
     glMatrixMode(GL_PROJECTION);
@@ -35,7 +34,7 @@ void gui::createContext(HDC hdc)
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableSetMousePos;
     ImGui::StyleColorsDark();
 
-    ImGui_ImplWin32_Init(data::hWindow);
+    ImGui_ImplWin32_Init(data::hWndGame);
     ImGui_ImplOpenGL2_Init();
 
     gui::isContextCreated = { true };
@@ -68,24 +67,45 @@ void gui::menu()
         {
 			if (ImGui::CollapsingHeader("esp"))
 			{
-				ImGui::Checkbox("draw", &esp::toggle::drawESP);
+				ImGui::Checkbox("draw##esp", &esp::toggle::drawESP);
+                ImGui::Checkbox("box##esp", &esp::toggle::box); 
 
-                ImGui::Checkbox("box", &esp::toggle::box); ImGui::SameLine(ImGui::GetContentRegionAvail().x * 0.5f); ImGui::SetNextItemWidth(-FLT_MIN);
-				ImGui::ColorEdit3("box color", esp::color::box, ImGuiColorEditFlags_NoLabel);
-				ImGui::Checkbox("name", &esp::toggle::name); ImGui::SameLine(ImGui::GetContentRegionAvail().x * 0.5f); ImGui::SetNextItemWidth(-FLT_MIN);
-				ImGui::ColorEdit3("name color", esp::color::name, ImGuiColorEditFlags_NoLabel);
-				ImGui::Checkbox("health", &esp::toggle::health);
-				ImGui::Checkbox("armor", &esp::toggle::armor);
-				ImGui::Checkbox("distance", &esp::toggle::distance); ImGui::SameLine(ImGui::GetContentRegionAvail().x * 0.5f); ImGui::SetNextItemWidth(-FLT_MIN);
-				ImGui::ColorEdit3("distance color", esp::color::distance, ImGuiColorEditFlags_NoLabel);
+                ImGui::SameLine(ImGui::GetContentRegionAvail().x * 0.5f); 
+                ImGui::SetNextItemWidth(-FLT_MIN);
+				ImGui::ColorEdit3("box color##esp", esp::color::box, ImGuiColorEditFlags_NoLabel);
+				ImGui::Checkbox("name##esp", &esp::toggle::name); 
+
+                ImGui::SameLine(ImGui::GetContentRegionAvail().x * 0.5f); 
+                ImGui::SetNextItemWidth(-FLT_MIN);
+				ImGui::ColorEdit3("name color##esp", esp::color::name, ImGuiColorEditFlags_NoLabel);
+
+				ImGui::Checkbox("health##esp", &esp::toggle::health);
+				ImGui::Checkbox("armor##esp", &esp::toggle::armor);
+				ImGui::Checkbox("distance##esp", &esp::toggle::distance); 
+
+                ImGui::SameLine(ImGui::GetContentRegionAvail().x * 0.5f); 
+                ImGui::SetNextItemWidth(-FLT_MIN);
+				ImGui::ColorEdit3("distance color##esp", esp::color::distance, ImGuiColorEditFlags_NoLabel);
 			}
 
             if (ImGui::CollapsingHeader("fov"))
             {
-                ImGui::Checkbox("draw", &esp::toggle::drawFov);
-				ImGui::RadioButton("circle", &esp::setting::fovType, 0); ImGui::SameLine();
-				ImGui::RadioButton("rectangle", &esp::setting::fovType, 1); ImGui::SameLine(ImGui::GetContentRegionAvail().x * 0.5f); ImGui::SetNextItemWidth(-FLT_MIN);
-				ImGui::ColorEdit3("fov color", esp::color::fov, ImGuiColorEditFlags_NoLabel);
+                ImGui::Checkbox("draw##fov", &esp::toggle::drawFov);
+				ImGui::RadioButton("circle##fov", &esp::setting::fovType, 0); 
+                
+                ImGui::SameLine();
+				ImGui::RadioButton("rectangle##fov", &esp::setting::fovType, 1);
+
+                ImGui::SameLine(ImGui::GetContentRegionAvail().x * 0.5f); 
+                ImGui::SetNextItemWidth(-FLT_MIN);
+				ImGui::ColorEdit3("fov color##fov", esp::color::fov, ImGuiColorEditFlags_NoLabel); 
+
+				// use ## to add id into label, carefull about same label id it can cause a conflict (## can be used to make no label)
+                // see https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-about-the-id-stack-system
+                ImGui::SetNextItemWidth(-FLT_MIN);
+				ImGui::SliderFloat("##fov thickness", &esp::setting::fovThickness, 1.0f, 10.0f, "thickness: %.3f", ImGuiSliderFlags_AlwaysClamp);
+                ImGui::SetNextItemWidth(-FLT_MIN);
+				ImGui::SliderFloat("##fov rounding", &esp::setting::fovRounding, 0.0f, 10.0f, "rouding: %.3f", ImGuiSliderFlags_AlwaysClamp);
             }
 
             ImGui::EndTabItem();

@@ -1,5 +1,6 @@
 #include <Windows.h>
 #include <thread>
+#include <iostream>
 
 #include "console.h"
 #include "hooks.h"
@@ -34,7 +35,6 @@ BOOL WINAPI DllMain(
 
     return TRUE;
 }
-
 
 void mainThread(const HINSTANCE hinstDLL)
 {

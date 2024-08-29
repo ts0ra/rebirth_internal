@@ -5,21 +5,23 @@
 
 namespace debug
 {
-	inline FILE* fDummy; // Don't use this variable, its just a dummy!
+	inline FILE* fDummy = nullptr; // FILE pointer for redirection
 
 	void initConsole()
 	{
-		fDummy = { nullptr };
 		AllocConsole();
 		freopen_s(&fDummy, "CONOUT$", "w", stdout);
 	}
 
 	void shutdownConsole()
 	{
-		if (fDummy != 0)
+		if (fDummy != nullptr)
+		{
 			fclose(fDummy);
+			fDummy = nullptr;  // Avoid dangling pointer
+		}
 		FreeConsole();
 	}
 }
 
-#endif
+#endif // DEBUG_REBIRTH
