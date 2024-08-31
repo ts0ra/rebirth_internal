@@ -1,9 +1,6 @@
-#ifndef HACK_REBIRTH
-#define HACK_REBIRTH
-
+#pragma once
 
 namespace hack
 {
 	
 }
-#endif

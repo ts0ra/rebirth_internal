@@ -1,48 +1,52 @@
-#ifndef ESP_REBIRTH
-#define ESP_REBIRTH
+#pragma once
 
-#include "data.h"
+#include "types.h"
+#include "game_struct.h"
+
 #include "../imgui/imgui.h"
-#include "../imgui/imgui_impl_opengl2.h"
-#include "../imgui/imgui_impl_win32.h"
 
 namespace esp
 {
 	namespace toggle
 	{
-		inline bool drawESP{ false };
-		inline bool name{ false };
-		inline bool box{ false };
-		inline bool health{ false };
-		inline bool armor{ false };
-		inline bool distance{ false };
-		inline bool drawFov{ false };
+		extern bool drawESP;
+		extern bool name;
+		extern bool box;
+		extern bool health;
+		extern bool armor;
+		extern bool distance;
+		extern bool drawFOV;
 	}
 
 	namespace color
 	{
-		inline float box[3]{ 1.0f, 1.0f, 1.0f };
-		inline float name[3]{ 1.0f, 1.0f, 1.0f };
-		inline float distance[3]{ 1.0f, 1.0f, 1.0f };
-		inline float fov[3]{ 1.0f, 1.0f, 1.0f };
+		extern float box[3];
+		extern float name[3];
+		extern float distance[3];
+		extern float fov[3];
 	}
 
 	namespace setting
 	{
-		inline int fovType{ 0 };
-		inline float fovThickness{ 1.0f };
-		inline float fovRounding{ 0.0f };
+		extern int fovType;
+		extern float fovThickness;
+		extern float fovRounding;
+	}
+
+	namespace dataESP
+	{
+		extern playerEnt* targetPlayer;
+		extern Vector2 headScreenPos;
+		extern Vector2 footScreenPos;
 	}
 
 	void draw();
-	void drawName(playerEnt* player);
-	void drawBox(playerEnt* player);
-	void drawHealth(playerEnt* player);
-	void drawArmor(playerEnt* player);
-	void drawDistance(playerEnt* player);
+	void drawName();
+	void drawBox();
+	void drawHealth();
+	void drawArmor();
+	void drawDistance();
 	void drawFOV();
 
 	void getHealthColor(float healthPercentage, ImU32& outputColor);
 }
-
-#endif

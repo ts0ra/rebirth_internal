@@ -1,11 +1,11 @@
-#ifndef DEBUG_REBIRTH
-#define DEBUG_REBIRTH
+#pragma once
+
 #include <Windows.h>
 #include <cstdio>
 
-namespace debug
+namespace console
 {
-	inline FILE* fDummy = nullptr; // FILE pointer for redirection
+	FILE* fDummy = nullptr; // FILE pointer for redirection
 
 	void initConsole()
 	{
@@ -23,5 +23,3 @@ namespace debug
 		FreeConsole();
 	}
 }
-
-#endif // DEBUG_REBIRTH

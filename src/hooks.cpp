@@ -1,153 +1,176 @@
 #include "hooks.h"
-#include "menu.h"
+
+#include "gui.h"
 #include "esp.h"
+#include "data.h"
 
 #include "../imgui/imgui_impl_win32.h"
 
 #include <iostream>
 
-#pragma comment(lib, "libMinHook.x86.lib")
+//#pragma comment(lib, "libMinHook.x86.lib")
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-void hooks::initHooks()
+namespace hooks
 {
-	data::hWndGame = FindWindow(NULL, L"AssaultCube");
-	GetClientRect(data::hWndGame, &data::rectGame);
-	data::widthGame = data::rectGame.right - data::rectGame.left;
-	data::heightGame = data::rectGame.bottom - data::rectGame.top;
+	MH_STATUS initSuccess;
 
-	hooks::initSuccess = MH_Initialize();
-	if (hooks::initSuccess != MH_OK)
-		std::cout << "Failed to initialize MinHook\n";
-	else
-		std::cout << "MinHook initialized\n";
-}
+	// unhookMouse(0) : Disable ingame mouse input
+	// unhookMouse(1) : Enable ingame mouse input
+	const SDL_SetRelativeMouseMode unhookMouse = reinterpret_cast<SDL_SetRelativeMouseMode>(GetProcAddress(GetModuleHandle(L"SDL2.dll"), "SDL_SetRelativeMouseMode"));
 
-void hooks::createHooks()
-{
-	// swapbuffers
-	MH_STATUS createSwapBuffers = MH_CreateHook(
-		reinterpret_cast<LPVOID>(hooks::targetSwapBuffers),
-		&detours::detourSwapBuffers,
-		reinterpret_cast<LPVOID*>(&hooks::originalSwapBuffers)
-	);
-	if (createSwapBuffers != MH_OK)
-		std::cout << "Failed to create SwapBuffers hook\n";
-	else
-		std::cout << "SwapBuffers hook created\n";
+	wglSwapBuffers originalSwapBuffers{ nullptr };
+	const wglSwapBuffers targetSwapBuffers = reinterpret_cast<wglSwapBuffers>(GetProcAddress(GetModuleHandle(L"opengl32.dll"), "wglSwapBuffers"));
 
+	WndProc originalWndProc{ nullptr };
+	const WndProc targetWndProc = reinterpret_cast<WndProc>(GetWindowLongPtr(FindWindow(NULL, L"AssaultCube"), GWLP_WNDPROC)); // most AC won't detect FindWindow
 
-	// wndproc
-	MH_STATUS createWndProc = MH_CreateHook(
-		reinterpret_cast<LPVOID>(hooks::targetWndProc),
-		&detours::detourWndProc,
-		reinterpret_cast<LPVOID*>(&hooks::originalWndProc)
-	);
-	if (createWndProc != MH_OK)
-		std::cout << "Failed to create WndProc hook\n";
-	else
-		std::cout << "WndProc hook created\n";
+	mousemove originalMouseMove{ nullptr };
+	const mousemove targetMouseMove = reinterpret_cast<mousemove>(offsets::function::mousemove);
 
-	// mousemove
-	MH_STATUS createMouseMove = MH_CreateHook(
-		reinterpret_cast<LPVOID>(hooks::targetMouseMove),
-		&detours::detourMouseMove,
-		reinterpret_cast<LPVOID*>(&hooks::originalMouseMove)
-	);
-	if (createMouseMove != MH_OK)
-		std::cout << "Failed to create MouseMove hook\n";
-	else
-		std::cout << "MouseMove hook created\n";
-}
-
-void hooks::enableHooks()
-{
-	// swapbuffers
-	MH_STATUS enableSwapBuffers = MH_EnableHook(hooks::targetSwapBuffers);
-	if (enableSwapBuffers != MH_OK)
-		std::cout << "Failed to enable SwapBuffers hook\n";
-	else
-		std::cout << "SwapBuffers hook enabled\n";
-
-	// wndproc
-	MH_STATUS enableWndProc = MH_EnableHook(hooks::targetWndProc);
-	if (enableWndProc != MH_OK)
-		std::cout << "Failed to enable WndProc hook\n";
-	else
-		std::cout << "WndProc hook enabled\n";
-
-	// mousemove
-	MH_STATUS enableMouseMove = MH_EnableHook(hooks::targetMouseMove);
-	if (enableMouseMove != MH_OK)
-		std::cout << "Failed to enable MouseMove hook\n";
-	else
-		std::cout << "MouseMove hook enabled\n";
-}
-
-void hooks::shutdownHooks()
-{
-	hooks::unhookMouse(1);
-	MH_DisableHook(MH_ALL_HOOKS);
-	if (hooks::initSuccess == MH_OK)
-		MH_Uninitialize();
-	gui::shutdownContext();
-}
-
-BOOL __stdcall detours::detourSwapBuffers(HDC hdc)
-{
-	gui::gameContext = wglGetCurrentContext();
-
-	if (!gui::isContextCreated)
+	void initHooks()
 	{
-		gui::createContext(hdc);
+		data::hWndGame = FindWindow(NULL, L"AssaultCube");
+		GetClientRect(data::hWndGame, &data::rectGame);
+		data::widthGame = data::rectGame.right - data::rectGame.left;
+		data::heightGame = data::rectGame.bottom - data::rectGame.top;
+
+		hooks::initSuccess = MH_Initialize();
+		if (hooks::initSuccess != MH_OK)
+			std::cout << "Failed to initialize MinHook\n";
+		else
+			std::cout << "MinHook initialized\n";
 	}
 
-	wglMakeCurrent(hdc, gui::myContext);
-	
-	gui::startRender();
-	if (gui::showMenu)
-		gui::menu();
-	esp::draw();
-	gui::endRender();
+	void createHooks()
+	{
+		// swapbuffers
+		MH_STATUS createSwapBuffers = MH_CreateHook(
+			reinterpret_cast<LPVOID>(hooks::targetSwapBuffers),
+			&detours::detourSwapBuffers,
+			reinterpret_cast<LPVOID*>(&hooks::originalSwapBuffers)
+		);
+		if (createSwapBuffers != MH_OK)
+			std::cout << "Failed to create SwapBuffers hook\n";
+		else
+			std::cout << "SwapBuffers hook created\n";
 
-	wglMakeCurrent(hdc, gui::gameContext);
 
-	return hooks::originalSwapBuffers(hdc);
+		// wndproc
+		MH_STATUS createWndProc = MH_CreateHook(
+			reinterpret_cast<LPVOID>(hooks::targetWndProc),
+			&detours::detourWndProc,
+			reinterpret_cast<LPVOID*>(&hooks::originalWndProc)
+		);
+		if (createWndProc != MH_OK)
+			std::cout << "Failed to create WndProc hook\n";
+		else
+			std::cout << "WndProc hook created\n";
+
+		// mousemove
+		MH_STATUS createMouseMove = MH_CreateHook(
+			reinterpret_cast<LPVOID>(hooks::targetMouseMove),
+			&detours::detourMouseMove,
+			reinterpret_cast<LPVOID*>(&hooks::originalMouseMove)
+		);
+		if (createMouseMove != MH_OK)
+			std::cout << "Failed to create MouseMove hook\n";
+		else
+			std::cout << "MouseMove hook created\n";
+	}
+
+	void enableHooks()
+	{
+		// swapbuffers
+		MH_STATUS enableSwapBuffers = MH_EnableHook(hooks::targetSwapBuffers);
+		if (enableSwapBuffers != MH_OK)
+			std::cout << "Failed to enable SwapBuffers hook\n";
+		else
+			std::cout << "SwapBuffers hook enabled\n";
+
+		// wndproc
+		MH_STATUS enableWndProc = MH_EnableHook(hooks::targetWndProc);
+		if (enableWndProc != MH_OK)
+			std::cout << "Failed to enable WndProc hook\n";
+		else
+			std::cout << "WndProc hook enabled\n";
+
+		// mousemove
+		MH_STATUS enableMouseMove = MH_EnableHook(hooks::targetMouseMove);
+		if (enableMouseMove != MH_OK)
+			std::cout << "Failed to enable MouseMove hook\n";
+		else
+			std::cout << "MouseMove hook enabled\n";
+	}
+
+	void shutdownHooks()
+	{
+		hooks::unhookMouse(1);
+		MH_DisableHook(MH_ALL_HOOKS);
+		if (hooks::initSuccess == MH_OK)
+			MH_Uninitialize();
+		gui::shutdownContext();
+	}
 }
 
-BOOL WINAPI detours::detourWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+namespace detours
 {
-	if (gui::showMenu)
+	BOOL __stdcall detourSwapBuffers(HDC hdc)
 	{
-		if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam))
-			return 0;
+		gui::gameContext = wglGetCurrentContext();
 
-		switch (msg)
-		{ // can be used to detect key presses to bypass some anticheat
-		case WM_KEYDOWN:
-		case WM_KEYUP:
-		case WM_CHAR:
-		case WM_MOUSEMOVE:
-		case WM_LBUTTONDOWN:
-		case WM_LBUTTONUP:
-		case WM_RBUTTONDOWN:
-		case WM_RBUTTONUP:
-		case WM_MBUTTONDBLCLK:
-		case WM_MBUTTONDOWN:
-		case WM_MBUTTONUP:
-		case WM_MOUSEWHEEL:
-		case WM_MOUSEHWHEEL:
-			return 0;
+		if (!gui::isContextCreated)
+		{
+			gui::createContext(hdc);
 		}
+
+		wglMakeCurrent(hdc, gui::myContext);
+
+		gui::startRender();
+		if (gui::showMenu)
+			gui::menu();
+		esp::draw();
+		gui::endRender();
+
+		wglMakeCurrent(hdc, gui::gameContext);
+
+		return hooks::originalSwapBuffers(hdc);
 	}
 
-	return CallWindowProc(hooks::originalWndProc, hwnd, msg, wParam, lParam);
-}
+	BOOL WINAPI detourWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+	{
+		if (gui::showMenu)
+		{
+			if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wParam, lParam))
+				return 0;
 
-void __fastcall detours::detourMouseMove(int idx, int idy)
-{
-	if (gui::showMenu)
-		return;
+			switch (msg)
+			{ // can be used to detect key presses to bypass some anticheat
+			case WM_KEYDOWN:
+			case WM_KEYUP:
+			case WM_CHAR:
+			case WM_MOUSEMOVE:
+			case WM_LBUTTONDOWN:
+			case WM_LBUTTONUP:
+			case WM_RBUTTONDOWN:
+			case WM_RBUTTONUP:
+			case WM_MBUTTONDBLCLK:
+			case WM_MBUTTONDOWN:
+			case WM_MBUTTONUP:
+			case WM_MOUSEWHEEL:
+			case WM_MOUSEHWHEEL:
+				return 0;
+			}
+		}
 
-	hooks::originalMouseMove(idx, idy);
+		return CallWindowProc(hooks::originalWndProc, hwnd, msg, wParam, lParam);
+	}
+
+	void __fastcall detourMouseMove(int idx, int idy)
+	{
+		if (gui::showMenu)
+			return;
+
+		hooks::originalMouseMove(idx, idy);
+	}
 }

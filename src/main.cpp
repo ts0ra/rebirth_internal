@@ -1,11 +1,15 @@
+// paired header file
+
+// other header files
+#include "console.h"
+#include "hooks.h"
+#include "gui.h"
+// 3rd party header files
+
+// Standard library header files
 #include <Windows.h>
 #include <thread>
 #include <iostream>
-
-#include "console.h"
-#include "hooks.h"
-#include "menu.h"
-
 
 // Forward
 void mainThread(const HINSTANCE hinstDLL);
@@ -38,7 +42,7 @@ BOOL WINAPI DllMain(
 
 void mainThread(const HINSTANCE hinstDLL)
 {
-    debug::initConsole();
+    console::initConsole();
 	hooks::initHooks();
 
 	hooks::createHooks();
@@ -55,7 +59,7 @@ void mainThread(const HINSTANCE hinstDLL)
     }
    
 	hooks::shutdownHooks();
-	debug::shutdownConsole();
+    console::shutdownConsole();
 
     FreeLibraryAndExitThread(hinstDLL, 0);
 }

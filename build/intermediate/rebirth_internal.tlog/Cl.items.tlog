@@ -9,4 +9,6 @@ C:\Users\ts0ra\source\repos\rebirth_internal\src\esp.cpp;C:\Users\ts0ra\source\r
 C:\Users\ts0ra\source\repos\rebirth_internal\src\hack.cpp;C:\Users\ts0ra\source\repos\rebirth_internal\build\intermediate\hack.obj
 C:\Users\ts0ra\source\repos\rebirth_internal\src\hooks.cpp;C:\Users\ts0ra\source\repos\rebirth_internal\build\intermediate\hooks.obj
 C:\Users\ts0ra\source\repos\rebirth_internal\src\main.cpp;C:\Users\ts0ra\source\repos\rebirth_internal\build\intermediate\main.obj
-C:\Users\ts0ra\source\repos\rebirth_internal\src\menu.cpp;C:\Users\ts0ra\source\repos\rebirth_internal\build\intermediate\menu.obj
+C:\Users\ts0ra\source\repos\rebirth_internal\src\gui.cpp;C:\Users\ts0ra\source\repos\rebirth_internal\build\intermediate\gui.obj
+C:\Users\ts0ra\source\repos\rebirth_internal\src\types.cpp;C:\Users\ts0ra\source\repos\rebirth_internal\build\intermediate\types.obj
+C:\Users\ts0ra\source\repos\rebirth_internal\src\utils.cpp;C:\Users\ts0ra\source\repos\rebirth_internal\build\intermediate\utils.obj
