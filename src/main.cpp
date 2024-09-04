@@ -1,9 +1,11 @@
 // paired header file
 
 // other header files
+#include "data.h"
 #include "console.h"
 #include "hooks.h"
 #include "gui.h"
+#include "esp.h"
 // 3rd party header files
 
 // Standard library header files

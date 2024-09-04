@@ -3,6 +3,7 @@
 #include "esp.h"
 #include "data.h"
 #include "hooks.h"
+#include "hack.h"
 
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_impl_opengl2.h"
@@ -65,7 +66,11 @@ namespace gui
         {
             if (ImGui::BeginTabItem("hack"))
             {
-
+                if (ImGui::CollapsingHeader("map"))
+                {
+                    ImGui::Checkbox("show enemy on map", &hack::toggle::map);
+                    ImGui::Checkbox("show enemy on minimap", &hack::toggle::minimap);
+                }
 
                 ImGui::EndTabItem();
             }

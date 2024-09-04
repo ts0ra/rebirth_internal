@@ -5,7 +5,7 @@
 
 namespace console
 {
-	FILE* fDummy = nullptr; // FILE pointer for redirection
+	inline FILE* fDummy = nullptr; // FILE pointer for redirection
 
 	void initConsole()
 	{

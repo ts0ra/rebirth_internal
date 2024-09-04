@@ -5,6 +5,7 @@ C:\Users\ts0ra\source\repos\rebirth_internal\imgui\imgui_impl_opengl2.cpp;C:\Use
 C:\Users\ts0ra\source\repos\rebirth_internal\imgui\imgui_impl_win32.cpp;C:\Users\ts0ra\source\repos\rebirth_internal\build\intermediate\imgui_impl_win32.obj
 C:\Users\ts0ra\source\repos\rebirth_internal\imgui\imgui_tables.cpp;C:\Users\ts0ra\source\repos\rebirth_internal\build\intermediate\imgui_tables.obj
 C:\Users\ts0ra\source\repos\rebirth_internal\imgui\imgui_widgets.cpp;C:\Users\ts0ra\source\repos\rebirth_internal\build\intermediate\imgui_widgets.obj
+C:\Users\ts0ra\source\repos\rebirth_internal\mem.cpp;C:\Users\ts0ra\source\repos\rebirth_internal\build\intermediate\mem.obj
 C:\Users\ts0ra\source\repos\rebirth_internal\src\esp.cpp;C:\Users\ts0ra\source\repos\rebirth_internal\build\intermediate\esp.obj
 C:\Users\ts0ra\source\repos\rebirth_internal\src\hack.cpp;C:\Users\ts0ra\source\repos\rebirth_internal\build\intermediate\hack.obj
 C:\Users\ts0ra\source\repos\rebirth_internal\src\hooks.cpp;C:\Users\ts0ra\source\repos\rebirth_internal\build\intermediate\hooks.obj

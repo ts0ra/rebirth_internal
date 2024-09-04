@@ -8,6 +8,7 @@ using WndProc = LRESULT(CALLBACK*)(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 using wglSwapBuffers = BOOL(__stdcall*)(HDC hdc);
 using SDL_SetRelativeMouseMode = int(__cdecl*)(unsigned int mode);
 using mousemove = void(__fastcall*)(int idx, int idy);
+using minimap = void(*)();
 
 namespace hooks
 {
@@ -24,6 +25,9 @@ namespace hooks
 	extern mousemove originalMouseMove;
 	extern const mousemove targetMouseMove;
 
+	extern minimap originalMap;
+	extern const minimap targetMap;
+
 	void initHooks();
 	void createHooks();
 	void enableHooks();
@@ -35,4 +39,5 @@ namespace detours
 	BOOL __stdcall detourSwapBuffers(HDC hdc);
 	BOOL WINAPI detourWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	void __fastcall detourMouseMove(int idx, int idy);
+	void detourMap();
 }

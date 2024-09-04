@@ -6,60 +6,59 @@
 #include <cmath>
 #include <cstring>
 #include <cstdint>
-
-using uchar = unsigned char;
+#include <vector>
 
 struct entity {
-    short x;            // 0x0000
-    short y;            // 0x0002
-    short z;            // 0x0004
-    short attr1;        // 0x0006
-    uchar type;         // 0x0008
-    uchar attr2;        // 0x0009
-    uchar attr3;        // 0x000A
-    uchar attr4;        // 0x000B
-    short attr5;        // 0x000C
-    char attr6;         // 0x000E
-    uchar attr7;        // 0x000F
+    int16_t x;            // 0x0000
+    int16_t y;            // 0x0002
+    int16_t z;            // 0x0004
+    int16_t attr1;        // 0x0006
+    uint8_t type;         // 0x0008
+    uint8_t attr2;        // 0x0009
+    uint8_t attr3;        // 0x000A
+    uint8_t attr4;        // 0x000B
+    int16_t attr5;        // 0x000C
+    int8_t attr6;         // 0x000E
+    uint8_t attr7;        // 0x000F
     bool spawned;       // 0x0010
     char pad_0011[3];   // 0x0011 / code cave
-    int lastmillis;     // 0x0014
+    int32_t lastmillis;     // 0x0014
 };                      // Size: 0x0018
 
 struct gunInfo {
     char modelName[23]; // 0x0000
     char weaponName[42]; // 0x0017
     char pad[1]; // 0x0041 unused
-    short shootFX; // 0x0042
-    short reloadFX; // 0x0044
-    short reloadTime; // 0x0046
-    short shootDelay; // 0x0048
-    short damage; // 0x004A
-    short piercing; // 0x004C
-    short projectileSpeed; // 0x004E
-    short part; // 0x0050
-    short spread; // 0x0052
-    short recoil; // 0x0054
-    short magsize; // 0x0056
-    short mdl_kick_rot; // 0x0058
-    short mdl_kick_back; // 0x005A
-    short recoilIncrease; // 0x005C
-    short recoilBase; // 0x005E
-    short maxRecoil; // 0x0060
-    short recoilBackfade; // 0x0062
-    short pushFactor; // 0x0064
+    int16_t shootFX; // 0x0042
+    int16_t reloadFX; // 0x0044
+    int16_t reloadTime; // 0x0046
+    int16_t shootDelay; // 0x0048
+    int16_t damage; // 0x004A
+    int16_t piercing; // 0x004C
+    int16_t projectileSpeed; // 0x004E
+    int16_t part; // 0x0050
+    int16_t spread; // 0x0052
+    int16_t recoil; // 0x0054
+    int16_t magsize; // 0x0056
+    int16_t mdl_kick_rot; // 0x0058
+    int16_t mdl_kick_back; // 0x005A
+    int16_t recoilIncrease; // 0x005C
+    int16_t recoilBase; // 0x005E
+    int16_t maxRecoil; // 0x0060
+    int16_t recoilBackfade; // 0x0062
+    int16_t pushFactor; // 0x0064
     bool isAuto; // 0x0066
 }; // Size: 0x0067
 
 struct weapon {
     char pad1[4];           // 0x0000
-    int gunId;              // 0x0004
+    int32_t gunId;              // 0x0004
     char pad2[4];           // 0x0008
     gunInfo* ptrToGunInfo; // 0x000C
-    int* ptrToReserveAmmo;      // 0x0010
-    int* ptrToLoadedAmmo;   // 0x0014
-    int* ptrToWeaponDelay;  // 0x0018
-    int shotCount;          // 0x001C
+    int32_t* ptrToReserveAmmo;      // 0x0010
+    int32_t* ptrToLoadedAmmo;   // 0x0014
+    int32_t* ptrToWeaponDelay;  // 0x0018
+    int32_t shotCount;          // 0x001C
 };
 
 struct playerEnt {
@@ -69,20 +68,182 @@ struct playerEnt {
     Vector3 footPos; // 0x0028
     Vector3 viewAngles; // 0x0034
     char pad3[172]; // 0x0040
-    int health; // 0x00EC
-    int armor; // 0x00F0
+    int32_t health; // 0x00EC
+    int32_t armor; // 0x00F0
     char pad4[273]; // 0x00F4
     char username[16]; // 0x0205
     char pad5[247]; // 0x0215
-    int teamSide; // 0x030C
+    int32_t teamSide; // 0x030C
     char pad6[8]; // 0x0310
     bool isDead; // 0x0318
     char pad7[75]; // 0x0319
     weapon* ptrToCurrentWeapon; // 0x0364
 };
 
+//class newPlayerEnt
+//{
+//public:
+//    char pad_0000[4]; //0x0000 could be vtable
+//    Vector3 headPos; //0x0004
+//    Vector3 velocity; //0x0010
+//    Vector3 deltaPos; //0x001C
+//    Vector3 footPos; //0x0028
+//    float yaw; //0x0034 special struct can be made called viewAngles (vector3D)
+//    float pitch; //0x0038
+//    float roll; //0x003C
+//    float pitchVel; //0x0040 pitchvel is used to control how quickly the player's camera or view angle moves up or down, which is particularly useful for simulating camera effects like recoil, smooth pitch adjustments, or camera kickback after shooting.
+//    float maxSpeed; //0x0044
+//    int32_t timeInAir; //0x0048
+//    float radius; //0x004C
+//    float eyeHeight; //0x0050
+//    float maxEyeHeight; //0x0054
+//    float aboveEye; //0x0058
+//    bool inWater; //0x005C
+//    bool onFloor; //0x005D
+//    bool onLadder; //0x005E
+//    bool jumpNext; //0x005F
+//    bool jumpD; //0x0060 idk this one
+//    bool crouching; //0x0061
+//    bool crouchedInAir; //0x0062
+//    bool tryCrouch; //0x0063
+//    bool canCollide; //0x0064
+//    bool stuck; //0x0065
+//    bool scoping; //0x0066
+//    char pad_0067[1]; //0x0067
+//    int32_t lastJump; //0x0068 following total tick in game
+//    float lastJumpHeight; //0x006C
+//    int32_t lastSplash; //0x0070 idk
+//	int8_t move; //0x0074 1 = forward, -1 = backward
+//	int8_t strafe; //0x0075 1 = left, -1 = right
+//    uint8_t state; //0x0076 4 = edit_mode (find further on source code), 1 = dead
+//    uint8_t type; //0x0077 idk
+//    float eyeHeightVel; //0x0078
+//    int32_t lastPos; //0x007C
+//	bool left; //0x0080 input kode if we go left this is true, same for right, up (fordward), and down (backward)
+//    bool right; //0x0081
+//    bool up; //0x0082
+//    bool down; //0x0083
+//    char pad_0084[104]; //0x0084 this is reserved for animestate inside dynent class
+//    int32_t health; //0x00EC
+//    int32_t armor; //0x00F0
+//    int32_t primary; //0x00F4
+//    int32_t nextPrimary; //0x00F8 next selected weapon when u died
+//    int32_t gunSelect; //0x00FC
+//}; //Size: 0x0444
+
+//class newPlayerEnt
+//{
+//public:
+//    char pad_0000[4]; //0x0000
+//    Vector3 headPos; //0x0004
+//    Vector3 velocity; //0x0010
+//    Vector3 deltaPos; //0x001C
+//    Vector3 footPos; //0x0028
+//    float yaw; //0x0034 special struct can be made called viewAngles (vector3D)
+//    float pitch; //0x0038
+//    float roll; //0x003C
+//    float pitchVel; //0x0040 pitchvel is used to control how quickly the player's camera or view angle moves up or down, which is particularly useful for simulating camera effects like recoil, smooth pitch adjustments, or camera kickback after shooting.
+//    float maxSpeed; //0x0044
+//    int32_t timeInAir; //0x0048
+//    float radius; //0x004C
+//    float eyeHeight; //0x0050
+//    float maxEyeHeight; //0x0054
+//    float aboveEye; //0x0058
+//    bool inWater; //0x005C
+//    bool onFloor; //0x005D
+//    bool onLadder; //0x005E
+//    bool jumpNext; //0x005F
+//    bool jumpD; //0x0060 idk this one
+//    bool crouching; //0x0061
+//    bool crouchedInAir; //0x0062
+//    bool tryCrouch; //0x0063
+//    bool canCollide; //0x0064
+//    bool stuck; //0x0065
+//    bool scoping; //0x0066
+//    char pad_0067[1]; //0x0067
+//    int32_t lastJump; //0x0068 following total tick in game
+//    float lastJumpHeight; //0x006C
+//    int32_t lastSplash; //0x0070 idk
+//    int8_t move; //0x0074 1 = forward, -1 = backward
+//    int8_t strafe; //0x0075 1 = left, -1 = right
+//    uint8_t state; //0x0076 4 = edit_mode (find further on source code), 1 = dead
+//    uint8_t type; //0x0077 idk
+//    float eyeHeightVel; //0x0078
+//    int32_t lastPos; //0x007C
+//    bool left; //0x0080 input code, if we go left this is true, same for right, up (fordward), and down (backward)
+//    bool right; //0x0081
+//    bool up; //0x0082
+//    bool down; //0x0083
+//    char pad_0084[104]; //0x0084 this is reserved for animestate inside dynent class
+//    int32_t health; //0x00EC
+//    int32_t armor; //0x00F0
+//    int32_t primary; //0x00F4
+//    int32_t nextPrimary; //0x00F8 next selected weapon when u died
+//    int32_t gunSelect; //0x00FC
+//    bool akimboMode; //0x0100
+//	char pad_0101[195]; //0x0101 this is reserved for playerstate ammo[NUMGUNS], mag[NUMGUNS], gunwait[NUMGUNS], pstatshots[NUMGUNS], pstatdamage[NUMGUNS];
+//	uint32_t clientNum; //0x01C4 this is the client number (online mode and its exclude our client, i.e. total player 10 in multiplayer but it count 9)
+//    int32_t lastUpdate; //0x01C8
+//    int32_t plag; //0x01CC
+//    int32_t ping; //0x01D0
+//    uint32_t address; //0x01D4
+//    int32_t lifeSequence; //0x01D8 sequence id for each respawn, used in damage test
+//    int32_t frags; //0x01DC
+//    int32_t flagScore; //0x01E0
+//    int32_t deaths; //0x01E4
+//    int32_t tks; //0x01E8
+//    int32_t lastAction; //0x01EC
+//    int32_t lastMove; //0x01F0
+//    int32_t lastPain; //0x01F4
+//    int32_t lastVoicecom; //0x01F8
+//    int32_t lastDeath; //0x01FC
+//    int32_t clientRole; //0x0200
+//    bool attacking; //0x0204 force shot
+//    char name[260]; //0x0205
+//    char pad_0309[3]; //0x0309 unused byte after name
+//    int32_t teamSide; //0x030C
+//    int32_t weaponChanging; //0x0310
+//    int32_t nextWeapon; //0x0314
+//    int32_t spectateMode; //0x0318
+//    int32_t followPlayerCN; //0x031C
+//    int32_t earDamageMillis; //0x0320
+//    float maxRoll; //0x0324
+//    float maxRollEffect; //0x0328
+//    float movRoll; //0x032C
+//    float effRoll; //0x0330
+//    int32_t fFOV; //0x0334
+//    int32_t scopeFOV; //0x0338
+//    void* wpnPtrKnife; //0x033C
+//    void* wpnPtrPistol; //0x0340
+//    void* wpnPtrCarbine; //0x0344
+//    void* wpnPtrShotgun; //0x0348
+//    void* wpnPtrSubgun; //0x034C
+//    void* wpnPtrSniper; //0x0350
+//    void* wpnPtrAssault; //0x0354
+//    void* wpnPtrGrenade; //0x0358
+//    void* wpnPtrAkimbo; //0x035C
+//    void* wpnPtrPrevWpnSelect; //0x0360
+//    void* wpnPtrSelect; //0x0364
+//    void* wpnPtrNextWpnSelect; //0x0368
+//    void* wpnPtrPrimary; //0x036C
+//    void* wpnPtrNextPrimary; //0x0370
+//    void* wpnPtrLastAttWpn; //0x0374
+//    int32_t nextUpdate; //0x0378
+//    int32_t curPos; //0x037C
+//    int32_t numPos; //0x0380
+//	char pad_0384[84]; //0x0384 this is reserved for poshist history of player position (nextUpdate, curPos, and numPos also included inside the structure)
+//    int8_t* skinNoTeam; //0x03D8
+//    int8_t* skinCLA; //0x03DC
+//    int8_t* skinRVSF; //0x03E0
+//    float deltaYaw; //0x03E4
+//    float deltaPitch; //0x03E8
+//    float newYaw; //0x03EC
+//    float newPitch; //0x03F0
+//}; //Size: 0x03F4
+
 struct playerArray {
     std::array<playerEnt*, 32> players;
+    //std::vector<playerEnt*> players;
 };
 
 struct glmatrixf {
