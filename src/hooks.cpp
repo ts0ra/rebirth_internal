@@ -4,6 +4,7 @@
 #include "esp.h"
 #include "data.h"
 #include "hack.h"
+#include "mem.h"
 
 #include "../imgui/imgui_impl_win32.h"
 
@@ -31,6 +32,8 @@ namespace hooks
 
 	minimap originalMap{ nullptr };
 	const minimap targetMap = reinterpret_cast<minimap>(offsets::function::radarMap);
+
+	BYTE originalMap1[6];
 
 	void initHooks()
 	{
@@ -80,17 +83,6 @@ namespace hooks
 			std::cout << "Failed to create MouseMove hook\n";
 		else
 			std::cout << "MouseMove hook created\n";
-
-		// map
-		MH_STATUS createMap = MH_CreateHook(
-			reinterpret_cast<LPVOID>(targetMap),
-			&detours::detourMap,
-			reinterpret_cast<LPVOID*>(&originalMap)
-		);
-		if (createMap != MH_OK)
-			std::cout << "Failed to create Map hook\n";
-		else
-			std::cout << "Map hook created\n";
 	}
 
 	void enableHooks()
@@ -117,22 +109,51 @@ namespace hooks
 			std::cout << "MouseMove hook enabled\n";
 
 		// map
-		MH_STATUS enableMap = MH_EnableHook(targetMap);
-		if (enableMap != MH_OK)
-			std::cout << "Failed to enable Map hook\n";
-		else
-			std::cout << "Map hook enabled\n";
+		detour((BYTE*)targetMap, (BYTE*)(0x45D3E6), 6);
 	}
 
 	void shutdownHooks()
 	{
 		unhookMouse(1);
+		unhookDetour((BYTE*)targetMap, 6, originalMap1);
 		MH_STATUS disableStatus = MH_DisableHook(MH_ALL_HOOKS);
 		if (disableStatus == MH_OK)
 			std::cout << "All hooks disabled\n";
 		if (initSuccess == MH_OK)
 			MH_Uninitialize();
 		gui::shutdownContext();
+	}
+
+	bool detour(BYTE* src, BYTE* dst, const uintptr_t len)
+	{
+		if (len < 5) return false;
+
+		// Copy the original bytes to the provided buffer
+		memcpy(originalMap1, src, len);
+
+		DWORD oldProtect;
+		VirtualProtect(src, len, PAGE_EXECUTE_READWRITE, &oldProtect);
+
+		memset(src, 0x90, len); // Fill the memory with NOPs
+
+		// Use intptr_t to allow for negative offsets
+		std::intptr_t relativeAddress = reinterpret_cast<std::intptr_t>(dst) - reinterpret_cast<std::intptr_t>(src) - 5;
+
+		*src = 0xE9; // Opcode for JMP
+		*reinterpret_cast<std::intptr_t*>(src + 1) = relativeAddress; // Write the relative address
+
+		VirtualProtect(src, len, oldProtect, &oldProtect);
+		return true;
+	}
+
+	void unhookDetour(BYTE* src, const uintptr_t len, BYTE* originalBytes)
+	{
+		DWORD oldProtect;
+		VirtualProtect(src, len, PAGE_EXECUTE_READWRITE, &oldProtect);
+
+		memcpy(src, originalBytes, len); // Restore the original bytes
+
+		VirtualProtect(src, len, oldProtect, &oldProtect);
 	}
 }
 
@@ -199,12 +220,12 @@ namespace detours
 		hooks::originalMouseMove(idx, idy);
 	}
 
-	void __declspec(naked) detourMap()
+	/*void __declspec(naked) detourMap()
 	{
 		__asm
 		{
 			mov eax, 0x45D3E6
 			jmp eax
 		}
-	}
+	}*/
 }

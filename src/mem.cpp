@@ -32,37 +32,4 @@ namespace mem
 		}
 		return currentAddress;
 	}
-
-	bool detour(BYTE* src, BYTE* dst, const uintptr_t len)
-	{
-		if(len < 5) return false;
-
-		DWORD oldProtect;
-		VirtualProtect(src, len, PAGE_EXECUTE_READWRITE, &oldProtect);
-
-		std::uintptr_t relativeAddress = dst - src - 5;
-
-		*src = 0xE9;
-		*reinterpret_cast<std::uintptr_t*>(src + 1) = relativeAddress;
-		//*(std::uintptr_t*)(src + 1) = relativeAddress;
-
-		VirtualProtect(src, len, oldProtect, &oldProtect);
-		return true;
-	}
-
-	BYTE* trampHook(BYTE* src, BYTE* dst, const uintptr_t len)
-	{
-		if (len < 5) return false;
-
-		BYTE* gateway = reinterpret_cast<BYTE*>(VirtualAlloc(0, len, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE));
-		memcpy_s(gateway, len, src, len);
-
-		std::uintptr_t gatewayRelativeAddr = src - gateway - 5;
-
-		*(gateway + len) = 0xE9;
-
-		*(std::uintptr_t*)((uintptr_t)gateway + len + 1) = gatewayRelativeAddr;
-
-		detour(src, dst, len);
-	}
 }

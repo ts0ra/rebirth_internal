@@ -4,6 +4,8 @@
 
 #include "../minhook/MinHook.h"
 
+#include <vector>
+
 using WndProc = LRESULT(CALLBACK*)(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 using wglSwapBuffers = BOOL(__stdcall*)(HDC hdc);
 using SDL_SetRelativeMouseMode = int(__cdecl*)(unsigned int mode);
@@ -28,10 +30,15 @@ namespace hooks
 	extern minimap originalMap;
 	extern const minimap targetMap;
 
+	extern BYTE originalMap1[6];
+
 	void initHooks();
 	void createHooks();
 	void enableHooks();
 	void shutdownHooks();
+
+	bool detour(BYTE* src, BYTE* dst, const uintptr_t len);
+	void unhookDetour(BYTE* src, const uintptr_t len, BYTE* originalBytes);
 }
 
 namespace detours
@@ -39,5 +46,5 @@ namespace detours
 	BOOL __stdcall detourSwapBuffers(HDC hdc);
 	BOOL WINAPI detourWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	void __fastcall detourMouseMove(int idx, int idy);
-	void detourMap();
+	//void detourMap();
 }
