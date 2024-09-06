@@ -39,7 +39,10 @@ namespace hooks
 	void shutdownHooks();
 
 	bool detour(BYTE* src, BYTE* dst, const uintptr_t len);
+	// make disable state
 	void trampoline(BYTE* src, BYTE* dst, const uintptr_t len, bool saveTrampoline = false);
+	void enableDetour(std::uintptr_t address = 0);
+	void disableDetour(std::uintptr_t address = 0);
 	void unhookDetour();
 }
 

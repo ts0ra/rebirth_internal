@@ -13,6 +13,8 @@
 //#pragma comment(lib, "libMinHook.x86.lib")
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
+// Note: attaching with vs causing memory to be read only
+
 namespace hooks
 {
 	MH_STATUS initSuccess;
@@ -83,6 +85,9 @@ namespace hooks
 			std::cout << "Failed to create MouseMove hook\n";
 		else
 			std::cout << "MouseMove hook created\n";
+
+		// map
+		trampoline((BYTE*)targetMap, (BYTE*)0x45D3E6, 6);
 	}
 
 	void enableHooks()
@@ -107,16 +112,11 @@ namespace hooks
 			std::cout << "Failed to enable MouseMove hook\n";
 		else
 			std::cout << "MouseMove hook enabled\n";
-
-		// map
-		//detour((BYTE*)targetMap, (BYTE*)(0x45D3E6), 6);
-		trampoline((BYTE*)targetMap, (BYTE*)0x45D3E6, 6, true);
 	}
 
 	void shutdownHooks()
 	{
 		unhookMouse(1);
-		//unhookDetour((BYTE*)targetMap, 6, originalMap1);
 		unhookDetour();
 		MH_STATUS disableStatus = MH_DisableHook(MH_ALL_HOOKS);
 		if (disableStatus == MH_OK)
@@ -128,16 +128,11 @@ namespace hooks
 
 	bool detour(BYTE* src, BYTE* dst, const uintptr_t len)
 	{
-		//BYTE_ARRAY tempBytes;
 
 		if (len < 5) return false;
 
 		DWORD oldProtect;
 		VirtualProtect(src, len, PAGE_EXECUTE_READWRITE, &oldProtect);
-		
-		// Copy the original bytes to the provided buffer
-		//memcpy(tempBytes.data(), src, len);
-		//stolenBytes.push_back(tempBytes);
 
 		memset(src, 0x90, len); // Fill the memory with NOPs
 
@@ -179,10 +174,63 @@ namespace hooks
 		tempHook.address = reinterpret_cast<std::uintptr_t>(src);
 		tempHook.saveTrampoline = saveTrampoline;
 		tempHook.length = len;
+		tempHook.dst = reinterpret_cast<std::uintptr_t>(dst);
 
 		hookStorage.push_back(tempHook);
 		
-		detour(src, dst, len);
+		//detour(src, dst, len);
+	}
+
+	void enableDetour(std::uintptr_t address)
+	{
+		if (address)
+		{
+			for (auto& hook : hookStorage)
+			{
+				if (hook.address == address)
+				{
+					detour((BYTE*)hook.address, (BYTE*)hook.dst, hook.length);
+				}
+			}
+
+			return;
+		}
+
+		for (auto& hook : hookStorage)
+		{
+			detour((BYTE*)hook.address, (BYTE*)hook.dst, hook.length);
+		}
+	}
+
+	void disableDetour(std::uintptr_t address)
+	{
+		if (address)
+		{
+			for (auto& hook : hookStorage)
+			{
+				if (hook.address == address)
+				{
+					DWORD oldProtect;
+					VirtualProtect((LPVOID)hook.address, hook.length, PAGE_EXECUTE_READWRITE, &oldProtect);
+
+					memcpy((LPVOID)hook.address, hook.originalBytes, 6);
+
+					VirtualProtect((LPVOID)hook.address, hook.length, oldProtect, &oldProtect);
+				}
+			}
+
+			return;
+		}
+
+		for (auto& hook : hookStorage)
+		{
+			DWORD oldProtect;
+			VirtualProtect((LPVOID)hook.address, hook.length, PAGE_EXECUTE_READWRITE, &oldProtect);
+
+			memcpy((LPVOID)hook.address, hook.originalBytes, 6);
+
+			VirtualProtect((LPVOID)hook.address, hook.length, oldProtect, &oldProtect);
+		}
 	}
 
 	void unhookDetour()
@@ -202,16 +250,6 @@ namespace hooks
 			}
 		}
 	}
-
-	//void unhookDetour(BYTE* src, const uintptr_t len, BYTE* originalBytes)
-	//{
-	//	DWORD oldProtect;
-	//	VirtualProtect(src, len, PAGE_EXECUTE_READWRITE, &oldProtect);
-
-	//	memcpy(src, originalBytes, len); // Restore the original bytes
-
-	//	VirtualProtect(src, len, oldProtect, &oldProtect);
-	//}
 }
 
 namespace detours
@@ -276,13 +314,4 @@ namespace detours
 
 		hooks::originalMouseMove(idx, idy);
 	}
-
-	/*void __declspec(naked) detourMap()
-	{
-		__asm
-		{
-			mov eax, 0x45D3E6
-			jmp eax
-		}
-	}*/
 }

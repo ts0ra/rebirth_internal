@@ -116,4 +116,5 @@ struct customHook
     BYTE* gateaway;
     bool saveTrampoline;
     int length;
+    std::uintptr_t dst;
 };
