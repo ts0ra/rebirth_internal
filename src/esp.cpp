@@ -52,7 +52,7 @@ namespace esp
 				if (dataESP::targetPlayer == nullptr) continue; // skip if invalid player
 				if (utils::isTeamGameMode(*data::game::gameMode) &&
 					dataESP::targetPlayer->teamSide == data::game::localPlayer->teamSide) continue; // skip if player is on the same team
-				if (dataESP::targetPlayer->isDead) continue; // skip if player is dead
+				if (dataESP::targetPlayer->state == 1) continue; // skip if player is dead
 				
 				Vector3 newHeadPos = dataESP::targetPlayer->headPos + Vector3{ 0.0f, 0.0f, 0.70f }; // offset the head position
 				Vector3 newFootPos = dataESP::targetPlayer->footPos - Vector3{ 0.0f, 0.0f, 0.15f }; // offset the foot position
@@ -84,14 +84,14 @@ namespace esp
 
 	void drawName()
 	{
-		float textWidht = ImGui::CalcTextSize(dataESP::targetPlayer->username).x;
+		float textWidht = ImGui::CalcTextSize(dataESP::targetPlayer->name).x;
 		ImVec2 textPosition = ImVec2(dataESP::headScreenPos.x - textWidht / 2.0f, dataESP::headScreenPos.y - 15.0f);
 		ImU32 color = ImColor(esp::color::name[0], esp::color::name[1], esp::color::name[2]);
 
 		ImGui::GetBackgroundDrawList()->AddText(
 			textPosition,
 			color,
-			dataESP::targetPlayer->username
+			dataESP::targetPlayer->name
 		);
 	}
 

@@ -66,6 +66,11 @@ namespace gui
         {
             if (ImGui::BeginTabItem("hack"))
             {
+                if (ImGui::CollapsingHeader("aim"))
+                {
+                    ImGui::Checkbox("enable##aim", &hack::toggle::enableAimbot);
+                }
+
                 if (ImGui::CollapsingHeader("map"))
                 {
                     ImGui::Checkbox("show enemy on map", &hack::toggle::map);

@@ -90,7 +90,7 @@ namespace hooks
 		trampoline((BYTE*)targetMap, (BYTE*)0x45D3E6, 6);
 
 		// minimap
-		trampoline((BYTE*)targetMinimap, (BYTE*)0x45C606, 6);
+		trampoline((BYTE*)targetMinimap, (BYTE*)0x45C606, 6); // maybe still broken, take a look later
 	}
 
 	void enableHooks()
