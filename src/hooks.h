@@ -40,7 +40,7 @@ namespace hooks
 
 	bool detour(BYTE* src, BYTE* dst, const uintptr_t len);
 	void trampoline(BYTE* src, BYTE* dst, const uintptr_t len, bool saveTrampoline = false);
-	//void unhookDetour(BYTE* src, const uintptr_t len, BYTE* originalBytes);
+	void unhookDetour();
 }
 
 namespace detours

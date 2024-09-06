@@ -117,6 +117,7 @@ namespace hooks
 	{
 		unhookMouse(1);
 		//unhookDetour((BYTE*)targetMap, 6, originalMap1);
+		unhookDetour();
 		MH_STATUS disableStatus = MH_DisableHook(MH_ALL_HOOKS);
 		if (disableStatus == MH_OK)
 			std::cout << "All hooks disabled\n";
@@ -177,10 +178,29 @@ namespace hooks
 		}
 		tempHook.address = reinterpret_cast<std::uintptr_t>(src);
 		tempHook.saveTrampoline = saveTrampoline;
+		tempHook.length = len;
 
 		hookStorage.push_back(tempHook);
 		
 		detour(src, dst, len);
+	}
+
+	void unhookDetour()
+	{
+		for (auto& hook : hookStorage)
+		{
+			DWORD oldProtect;
+			VirtualProtect((LPVOID)hook.address, hook.length, PAGE_EXECUTE_READWRITE, &oldProtect);
+
+			memcpy((LPVOID)hook.address, hook.originalBytes, 6);
+
+			VirtualProtect((LPVOID)hook.address, hook.length, oldProtect, &oldProtect);
+
+			if (hook.saveTrampoline)
+			{
+				VirtualFree(hook.gateaway, 0, MEM_RELEASE);
+			}
+		}
 	}
 
 	//void unhookDetour(BYTE* src, const uintptr_t len, BYTE* originalBytes)

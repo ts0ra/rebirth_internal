@@ -115,4 +115,5 @@ struct customHook
 	BYTE originalBytes[16];
     BYTE* gateaway;
     bool saveTrampoline;
+    int length;
 };
