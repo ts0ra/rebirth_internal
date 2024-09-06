@@ -11,6 +11,7 @@ using WndProc = LRESULT(CALLBACK*)(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 using wglSwapBuffers = BOOL(__stdcall*)(HDC hdc);
 using SDL_SetRelativeMouseMode = int(__cdecl*)(unsigned int mode);
 using mousemove = void(__fastcall*)(int idx, int idy);
+using map = void(*)();
 using minimap = void(*)();
 
 namespace hooks
@@ -28,8 +29,8 @@ namespace hooks
 	extern mousemove originalMouseMove;
 	extern const mousemove targetMouseMove;
 
-	extern minimap originalMap;
-	extern const minimap targetMap;
+	extern const map targetMap;
+	extern const minimap targetMinimap;
 
 	extern std::vector<customHook> hookStorage;
 

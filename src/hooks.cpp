@@ -32,8 +32,8 @@ namespace hooks
 	mousemove originalMouseMove{ nullptr };
 	const mousemove targetMouseMove = reinterpret_cast<mousemove>(offsets::function::mousemove);
 
-	//minimap originalMap{ nullptr };
-	const minimap targetMap = reinterpret_cast<minimap>(offsets::function::radarMap);
+	const map targetMap = reinterpret_cast<map>(offsets::function::radarMap);
+	const minimap targetMinimap = reinterpret_cast<minimap>(offsets::function::radarMinimap);
 
 	std::vector<customHook> hookStorage;
 
@@ -88,6 +88,9 @@ namespace hooks
 
 		// map
 		trampoline((BYTE*)targetMap, (BYTE*)0x45D3E6, 6);
+
+		// minimap
+		trampoline((BYTE*)targetMinimap, (BYTE*)0x45C606, 6);
 	}
 
 	void enableHooks()

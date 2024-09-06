@@ -31,5 +31,18 @@ namespace hack
 			state::mapIsOn = !state::mapIsOn;
 			hooks::disableDetour(offsets::function::radarMap);
 		}
+
+		if (toggle::minimap && !state::minimapIsOn)
+		{
+			std::cout << "Active onc\n";
+			state::minimapIsOn = !state::minimapIsOn;
+			hooks::enableDetour(offsets::function::radarMinimap);
+		}
+		else if (!toggle::minimap && state::minimapIsOn)
+		{
+			std::cout << "Deactive onc\n";
+			state::minimapIsOn = !state::minimapIsOn;
+			hooks::disableDetour(offsets::function::radarMinimap);
+		}
 	}
 }
