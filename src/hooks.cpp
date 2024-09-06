@@ -110,7 +110,7 @@ namespace hooks
 
 		// map
 		//detour((BYTE*)targetMap, (BYTE*)(0x45D3E6), 6);
-		trampoline((BYTE*)targetMap, (BYTE*)0x45D3E6, 6);
+		trampoline((BYTE*)targetMap, (BYTE*)0x45D3E6, 6, true);
 	}
 
 	void shutdownHooks()
