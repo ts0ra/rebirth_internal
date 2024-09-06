@@ -130,7 +130,11 @@ namespace gui
 
             if (ImGui::BeginTabItem("misc"))
             {
-
+				ImGui::Checkbox("Health", &hack::toggle::health);
+				ImGui::Checkbox("Armor", &hack::toggle::armor);
+				ImGui::Checkbox("Ammo", &hack::toggle::ammo);
+				ImGui::Checkbox("Granade", &hack::toggle::granade);
+				ImGui::Checkbox("Rapid Fire", &hack::toggle::rapidFire);
 
                 ImGui::EndTabItem();
             }

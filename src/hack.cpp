@@ -1,5 +1,6 @@
 #include "hack.h"
 #include "hooks.h"
+#include "data.h"
 
 #include <iostream>
 
@@ -14,6 +15,8 @@ namespace hack
 		bool armor{ false };
 		bool granade{ false };
 
+		bool rapidFire{ false };
+
 		bool map{ false };
 		bool minimap{ false };
 	}
@@ -27,8 +30,15 @@ namespace hack
 		bool armorIsOn{ false };
 		bool granadeIsOn{ false };
 
+		bool rapidFireIsOn{ false };
+
 		bool mapIsOn{ false };
 		bool minimapIsOn{ false };
+	}
+
+	namespace dataWeapon
+	{
+		int currentWeaponFireRate;
 	}
 
 	void run()
@@ -53,6 +63,36 @@ namespace hack
 		{
 			state::minimapIsOn = !state::minimapIsOn;
 			hooks::disableDetour(offsets::function::radarMinimap);
+		}
+
+		if (toggle::rapidFire && !state::rapidFireIsOn)
+		{
+			state::rapidFireIsOn = !state::rapidFireIsOn;
+		}
+		else if (!toggle::rapidFire && state::rapidFireIsOn)
+		{
+			state::rapidFireIsOn = !state::rapidFireIsOn;
+		}
+
+		if (toggle::health)
+		{
+			data::game::localPlayer->health = 999;
+		}
+
+		if (toggle::armor)
+		{
+			data::game::localPlayer->armor = 999;
+		}
+
+		if (toggle::ammo)
+		{
+			*data::game::localPlayer->wpnPtrSelect->ptrToAmmo = 999;
+			*data::game::localPlayer->wpnPtrSelect->ptrToMag = 999;
+		}
+
+		if (toggle::granade)
+		{
+			*data::game::localPlayer->wpnPtrGrenade->ptrToMag = 999;
 		}
 	}
 }

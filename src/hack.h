@@ -11,6 +11,8 @@ namespace hack
 		extern bool armor;
 		extern bool granade;
 
+		extern bool rapidFire;
+
 		extern bool map;
 		extern bool minimap;
 	}
@@ -24,8 +26,15 @@ namespace hack
 		extern bool armorIsOn;
 		extern bool granadeIsOn;
 
+		extern bool rapidFireIsOn;
+
 		extern bool mapIsOn;
 		extern bool minimapIsOn;
+	}
+
+	namespace dataWeapon
+	{
+		extern int currentWeaponFireRate;
 	}
 
 	void run();

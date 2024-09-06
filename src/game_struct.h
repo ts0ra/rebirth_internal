@@ -261,12 +261,12 @@ struct playerEnt {
     struct weapon* wpnPtrAssault; //0x0354
     struct grenadeStruct* wpnPtrGrenade; //0x0358
     struct akimboStruct* wpnPtrAkimbo; //0x035C
-    void* wpnPtrPrevWpnSelect; //0x0360
-    void* wpnPtrSelect; //0x0364
-    void* wpnPtrNextWpnSelect; //0x0368
-    void* wpnPtrPrimary; //0x036C
-    void* wpnPtrNextPrimary; //0x0370
-    void* wpnPtrLastAttWpn; //0x0374
+    struct weapon* wpnPtrPrevWpnSelect; //0x0360
+    struct weapon* wpnPtrSelect; //0x0364
+    struct weapon* wpnPtrNextWpnSelect; //0x0368
+    struct weapon* wpnPtrPrimary; //0x036C
+    struct weapon* wpnPtrNextPrimary; //0x0370
+    struct weapon* wpnPtrLastAttWpn; //0x0374
     int32_t nextUpdate; //0x0378
     int32_t curPos; //0x037C
     int32_t numPos; //0x0380
