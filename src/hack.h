@@ -30,11 +30,14 @@ namespace hack
 
 		extern bool mapIsOn;
 		extern bool minimapIsOn;
+
+		extern bool firstRun;
 	}
 
 	namespace dataWeapon
 	{
-		extern int currentWeaponFireRate;
+		extern int originalWpnFireRate;
+		//extern int customWpnFireRate;
 	}
 
 	void run();

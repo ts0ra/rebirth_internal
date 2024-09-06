@@ -34,11 +34,14 @@ namespace hack
 
 		bool mapIsOn{ false };
 		bool minimapIsOn{ false };
+
+		bool firstRun{ true };
 	}
 
 	namespace dataWeapon
 	{
-		int currentWeaponFireRate;
+		int originalWpnFireRate;
+		//int customWpnFireRate;
 	}
 
 	void run()
@@ -68,10 +71,12 @@ namespace hack
 		if (toggle::rapidFire && !state::rapidFireIsOn)
 		{
 			state::rapidFireIsOn = !state::rapidFireIsOn;
+			data::game::localPlayer->wpnPtrSelect->ptrToGunInfo->shootDelay = 0;
 		}
 		else if (!toggle::rapidFire && state::rapidFireIsOn)
 		{
 			state::rapidFireIsOn = !state::rapidFireIsOn;
+			data::game::localPlayer->wpnPtrSelect->ptrToGunInfo->shootDelay = dataWeapon::originalWpnFireRate;
 		}
 
 		if (toggle::health)
@@ -94,5 +99,12 @@ namespace hack
 		{
 			*data::game::localPlayer->wpnPtrGrenade->ptrToMag = 999;
 		}
+
+		if (state::firstRun)
+		{
+			dataWeapon::originalWpnFireRate = data::game::localPlayer->wpnPtrSelect->ptrToGunInfo->shootDelay;
+		}
+
+		state::firstRun = false;
 	}
 }
