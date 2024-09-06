@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <Windows.h>
 
 // Constants
 constexpr float RAD = 0.01745329252f;
@@ -105,4 +106,13 @@ struct Quaternion {
     Quaternion(float yaw, float pitch) noexcept;
 
     Quaternion& roll(float roll) noexcept;
+};
+
+// CustomHook
+struct customHook
+{
+	std::uintptr_t address;
+	BYTE originalBytes[16];
+    BYTE* gateaway;
+    bool saveTrampoline;
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "offsets.h"
+#include "types.h"
 
 #include "../minhook/MinHook.h"
 
@@ -30,7 +31,7 @@ namespace hooks
 	extern minimap originalMap;
 	extern const minimap targetMap;
 
-	extern BYTE originalMap1[6];
+	extern std::vector<customHook> hookStorage;
 
 	void initHooks();
 	void createHooks();
@@ -38,7 +39,8 @@ namespace hooks
 	void shutdownHooks();
 
 	bool detour(BYTE* src, BYTE* dst, const uintptr_t len);
-	void unhookDetour(BYTE* src, const uintptr_t len, BYTE* originalBytes);
+	void trampoline(BYTE* src, BYTE* dst, const uintptr_t len, bool saveTrampoline = false);
+	//void unhookDetour(BYTE* src, const uintptr_t len, BYTE* originalBytes);
 }
 
 namespace detours

@@ -30,10 +30,10 @@ namespace hooks
 	mousemove originalMouseMove{ nullptr };
 	const mousemove targetMouseMove = reinterpret_cast<mousemove>(offsets::function::mousemove);
 
-	minimap originalMap{ nullptr };
+	//minimap originalMap{ nullptr };
 	const minimap targetMap = reinterpret_cast<minimap>(offsets::function::radarMap);
 
-	BYTE originalMap1[6];
+	std::vector<customHook> hookStorage;
 
 	void initHooks()
 	{
@@ -109,13 +109,14 @@ namespace hooks
 			std::cout << "MouseMove hook enabled\n";
 
 		// map
-		detour((BYTE*)targetMap, (BYTE*)(0x45D3E6), 6);
+		//detour((BYTE*)targetMap, (BYTE*)(0x45D3E6), 6);
+		trampoline((BYTE*)targetMap, (BYTE*)0x45D3E6, 6);
 	}
 
 	void shutdownHooks()
 	{
 		unhookMouse(1);
-		unhookDetour((BYTE*)targetMap, 6, originalMap1);
+		//unhookDetour((BYTE*)targetMap, 6, originalMap1);
 		MH_STATUS disableStatus = MH_DisableHook(MH_ALL_HOOKS);
 		if (disableStatus == MH_OK)
 			std::cout << "All hooks disabled\n";
@@ -126,13 +127,16 @@ namespace hooks
 
 	bool detour(BYTE* src, BYTE* dst, const uintptr_t len)
 	{
-		if (len < 5) return false;
+		//BYTE_ARRAY tempBytes;
 
-		// Copy the original bytes to the provided buffer
-		memcpy(originalMap1, src, len);
+		if (len < 5) return false;
 
 		DWORD oldProtect;
 		VirtualProtect(src, len, PAGE_EXECUTE_READWRITE, &oldProtect);
+		
+		// Copy the original bytes to the provided buffer
+		//memcpy(tempBytes.data(), src, len);
+		//stolenBytes.push_back(tempBytes);
 
 		memset(src, 0x90, len); // Fill the memory with NOPs
 
@@ -146,15 +150,48 @@ namespace hooks
 		return true;
 	}
 
-	void unhookDetour(BYTE* src, const uintptr_t len, BYTE* originalBytes)
+	void trampoline(BYTE* src, BYTE* dst, const uintptr_t len, bool saveTrampoline)
 	{
-		DWORD oldProtect;
-		VirtualProtect(src, len, PAGE_EXECUTE_READWRITE, &oldProtect);
+		if (len < 5) return;
 
-		memcpy(src, originalBytes, len); // Restore the original bytes
+		customHook tempHook;
+		
+		memcpy(tempHook.originalBytes, src, len);
+		
+		if (saveTrampoline)
+		{
+			BYTE* gateaway = (BYTE*)VirtualAlloc(0, len, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 
-		VirtualProtect(src, len, oldProtect, &oldProtect);
+			if (gateaway)
+			{
+				memcpy(gateaway, src, len);
+
+				std::intptr_t gateawayRelativeAddr = reinterpret_cast<std::intptr_t>(src) - reinterpret_cast<std::intptr_t>(gateaway) - 5;
+
+				*(gateaway + len) = 0xE9;
+
+				*reinterpret_cast<std::intptr_t*>(reinterpret_cast<std::intptr_t>(gateaway) + len + 1) = gateawayRelativeAddr;
+
+				tempHook.gateaway = gateaway;
+			}
+		}
+		tempHook.address = reinterpret_cast<std::uintptr_t>(src);
+		tempHook.saveTrampoline = saveTrampoline;
+
+		hookStorage.push_back(tempHook);
+		
+		detour(src, dst, len);
 	}
+
+	//void unhookDetour(BYTE* src, const uintptr_t len, BYTE* originalBytes)
+	//{
+	//	DWORD oldProtect;
+	//	VirtualProtect(src, len, PAGE_EXECUTE_READWRITE, &oldProtect);
+
+	//	memcpy(src, originalBytes, len); // Restore the original bytes
+
+	//	VirtualProtect(src, len, oldProtect, &oldProtect);
+	//}
 }
 
 namespace detours
