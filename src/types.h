@@ -114,7 +114,6 @@ struct customHook
 	std::uintptr_t address;
 	BYTE originalBytes[16];
     BYTE* gateaway;
-    bool saveTrampoline;
     int length;
     std::uintptr_t dst;
 };
