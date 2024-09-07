@@ -26,18 +26,10 @@ namespace hack
 		extern bool armorIsOn;
 		extern bool granadeIsOn;
 
-		extern bool rapidFireIsOn;
+		extern bool rapidFireState;
 
-		extern bool mapIsOn;
-		extern bool minimapIsOn;
-
-		extern bool firstRun;
-	}
-
-	namespace dataWeapon
-	{
-		extern int originalWpnFireRate;
-		//extern int customWpnFireRate;
+		extern bool mapState;
+		extern bool minimapState;
 	}
 
 	void run();

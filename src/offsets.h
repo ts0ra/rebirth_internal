@@ -25,9 +25,14 @@ namespace offsets
 
 	namespace function
 	{
+		constexpr std::uintptr_t mousemove = 0x4BF780;
+	}
+
+	namespace midFunction
+	{
 		constexpr std::uintptr_t radarMap = 0x45D2C4; // radar map patch bytes 0x45D2C4
 		constexpr std::uintptr_t radarMinimap = 0x45C4D6; // radar mini map patch bytes 0x45C4D6
-		constexpr std::uintptr_t mousemove = 0x4BF780;
+		constexpr std::uintptr_t rapidFire = 0x4C73EA;
 	}
 }
 

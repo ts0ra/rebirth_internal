@@ -22,6 +22,8 @@ namespace gui
 
     void createContext(HDC hdc)
     {
+        //hooks::originalWndProc = (WNDPROC)GetWindowLongPtr(FindWindow(NULL, L"AssaultCube"), GWLP_WNDPROC);
+        hooks::originalWndProc = (WNDPROC)SetWindowLongPtr(FindWindow(NULL, L"AssaultCube"), GWLP_WNDPROC, (LONG_PTR)detours::detourWndProc);
         myContext = wglCreateContext(hdc);
         wglMakeCurrent(hdc, myContext);
         glMatrixMode(GL_PROJECTION);

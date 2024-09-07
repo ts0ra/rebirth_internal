@@ -26,14 +26,16 @@ namespace hooks
 	wglSwapBuffers originalSwapBuffers{ nullptr };
 	const wglSwapBuffers targetSwapBuffers = reinterpret_cast<wglSwapBuffers>(GetProcAddress(GetModuleHandle(L"opengl32.dll"), "wglSwapBuffers"));
 
-	WndProc originalWndProc{ nullptr };
-	const WndProc targetWndProc = reinterpret_cast<WndProc>(GetWindowLongPtr(FindWindow(NULL, L"AssaultCube"), GWLP_WNDPROC)); // most AC won't detect FindWindow
+	WNDPROC originalWndProc;
+
+	//WndProc originalWndProc{ nullptr };
+	//const WndProc targetWndProc = reinterpret_cast<WndProc>(GetWindowLongPtr(FindWindow(NULL, L"AssaultCube"), GWLP_WNDPROC)); // most AC won't detect FindWindow
 
 	mousemove originalMouseMove{ nullptr };
 	const mousemove targetMouseMove = reinterpret_cast<mousemove>(offsets::function::mousemove);
 
-	const map targetMap = reinterpret_cast<map>(offsets::function::radarMap);
-	const minimap targetMinimap = reinterpret_cast<minimap>(offsets::function::radarMinimap);
+	//const map targetMap = reinterpret_cast<map>(offsets::function::radarMap);
+	//const minimap targetMinimap = reinterpret_cast<minimap>(offsets::function::radarMinimap);
 
 	std::vector<customHook> hookStorage;
 
@@ -65,7 +67,7 @@ namespace hooks
 			std::cout << "SwapBuffers hook created\n";
 
 		// wndproc
-		MH_STATUS createWndProc = MH_CreateHook(
+		/*MH_STATUS createWndProc = MH_CreateHook(
 			reinterpret_cast<LPVOID>(targetWndProc),
 			&detours::detourWndProc,
 			reinterpret_cast<LPVOID*>(&originalWndProc)
@@ -73,7 +75,7 @@ namespace hooks
 		if (createWndProc != MH_OK)
 			std::cout << "Failed to create WndProc hook\n";
 		else
-			std::cout << "WndProc hook created\n";
+			std::cout << "WndProc hook created\n";*/
 
 		// mousemove
 		MH_STATUS createMouseMove = MH_CreateHook(
@@ -87,10 +89,10 @@ namespace hooks
 			std::cout << "MouseMove hook created\n";
 
 		// map
-		trampoline((BYTE*)targetMap, (BYTE*)0x45D3E6, 6);
+		//trampoline((BYTE*)targetMap, (BYTE*)0x45D3E6, 6);
 
 		// minimap
-		trampoline((BYTE*)targetMinimap, (BYTE*)0x45C606, 6); // maybe still broken, take a look later
+		//trampoline((BYTE*)targetMinimap, (BYTE*)0x45C606, 6); // maybe still broken, take a look later
 	}
 
 	void enableHooks()
@@ -103,11 +105,11 @@ namespace hooks
 			std::cout << "SwapBuffers hook enabled\n";
 
 		// wndproc
-		MH_STATUS enableWndProc = MH_EnableHook(targetWndProc);
+		/*MH_STATUS enableWndProc = MH_EnableHook(targetWndProc);
 		if (enableWndProc != MH_OK)
 			std::cout << "Failed to enable WndProc hook\n";
 		else
-			std::cout << "WndProc hook enabled\n";
+			std::cout << "WndProc hook enabled\n";*/
 
 		// mousemove
 		MH_STATUS enableMouseMove = MH_EnableHook(targetMouseMove);
@@ -120,12 +122,14 @@ namespace hooks
 	void shutdownHooks()
 	{
 		unhookMouse(1);
-		unhookDetour();
+		std::cout << "Mouse input unhooked\n";
+		//unhookDetour();
 		MH_STATUS disableStatus = MH_DisableHook(MH_ALL_HOOKS);
 		if (disableStatus == MH_OK)
 			std::cout << "All hooks disabled\n";
 		if (initSuccess == MH_OK)
 			MH_Uninitialize();
+		std::cout << "MinHook uninitialized\n";
 		gui::shutdownContext();
 	}
 
@@ -216,7 +220,7 @@ namespace hooks
 					DWORD oldProtect;
 					VirtualProtect((LPVOID)hook.address, hook.length, PAGE_EXECUTE_READWRITE, &oldProtect);
 
-					memcpy((LPVOID)hook.address, hook.originalBytes, 6);
+					memcpy((LPVOID)hook.address, hook.originalBytes, hook.length);
 
 					VirtualProtect((LPVOID)hook.address, hook.length, oldProtect, &oldProtect);
 				}
@@ -230,7 +234,7 @@ namespace hooks
 			DWORD oldProtect;
 			VirtualProtect((LPVOID)hook.address, hook.length, PAGE_EXECUTE_READWRITE, &oldProtect);
 
-			memcpy((LPVOID)hook.address, hook.originalBytes, 6);
+			memcpy((LPVOID)hook.address, hook.originalBytes, hook.length);
 
 			VirtualProtect((LPVOID)hook.address, hook.length, oldProtect, &oldProtect);
 		}
@@ -243,7 +247,7 @@ namespace hooks
 			DWORD oldProtect;
 			VirtualProtect((LPVOID)hook.address, hook.length, PAGE_EXECUTE_READWRITE, &oldProtect);
 
-			memcpy((LPVOID)hook.address, hook.originalBytes, 6);
+			memcpy((LPVOID)hook.address, hook.originalBytes, hook.length);
 
 			VirtualProtect((LPVOID)hook.address, hook.length, oldProtect, &oldProtect);
 
@@ -306,8 +310,8 @@ namespace detours
 			}
 		}
 
-		//return CallWindowProc(hooks::originalWndProc, hwnd, msg, wParam, lParam);
-		return hooks::originalWndProc(hwnd, msg, wParam, lParam);
+		return CallWindowProc(hooks::originalWndProc, hwnd, msg, wParam, lParam);
+		//return hooks::originalWndProc(hwnd, msg, wParam, lParam);
 	}
 
 	void __fastcall detourMouseMove(int idx, int idy)

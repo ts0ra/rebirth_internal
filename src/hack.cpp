@@ -1,6 +1,8 @@
 #include "hack.h"
 #include "hooks.h"
 #include "data.h"
+#include "game_struct.h"
+#include "mem.h"
 
 #include <iostream>
 
@@ -30,53 +32,58 @@ namespace hack
 		bool armorIsOn{ false };
 		bool granadeIsOn{ false };
 
-		bool rapidFireIsOn{ false };
+		bool rapidFireState{ false };
 
-		bool mapIsOn{ false };
-		bool minimapIsOn{ false };
-
-		bool firstRun{ true };
-	}
-
-	namespace dataWeapon
-	{
-		int originalWpnFireRate;
-		//int customWpnFireRate;
+		bool mapState{ false };
+		bool minimapState{ false };
 	}
 
 	void run()
 	{
-		if (toggle::map && !state::mapIsOn)
+		if (toggle::map != state::mapState)
 		{
-			state::mapIsOn = !state::mapIsOn;
-			hooks::enableDetour(offsets::function::radarMap);
-		}
-		else if (!toggle::map && state::mapIsOn)
-		{
-			state::mapIsOn = !state::mapIsOn;
-			hooks::disableDetour(offsets::function::radarMap);
-		}
-
-		if (toggle::minimap && !state::minimapIsOn)
-		{
-			state::minimapIsOn = !state::minimapIsOn;
-			hooks::enableDetour(offsets::function::radarMinimap);
-		}
-		else if (!toggle::minimap && state::minimapIsOn)
-		{
-			state::minimapIsOn = !state::minimapIsOn;
-			hooks::disableDetour(offsets::function::radarMinimap);
+			state::mapState = toggle::map;
+			
+			if (toggle::map)
+			{
+				mem::patch((BYTE*)offsets::midFunction::radarMap, (BYTE*)"\xE9\x1D\x01\x00\x00\x90", 6);
+				//hooks::enableDetour(offsets::function::radarMap);
+			}
+			else
+			{
+				mem::patch((BYTE*)offsets::midFunction::radarMap, (BYTE*)"\x0F\x8D\xCC\x00\x00\x00", 6);
+				//hooks::disableDetour(offsets::function::radarMap);
+			}
 		}
 
-		if (toggle::rapidFire && !state::rapidFireIsOn)
+		if (toggle::minimap != state::minimapState)
 		{
-			state::rapidFireIsOn = !state::rapidFireIsOn;
-			data::game::localPlayer->wpnPtrSelect->ptrToGunInfo->shootDelay = 0;
+			state::minimapState = toggle::minimap;
+
+			if (toggle::minimap)
+			{
+				mem::patch((BYTE*)offsets::midFunction::radarMinimap, (BYTE*)"\xE9\x2B\x01\x00\x00\x90", 6);
+				//hooks::enableDetour(offsets::function::radarMinimap);
+			}
+			else
+			{
+				mem::patch((BYTE*)offsets::midFunction::radarMinimap, (BYTE*)"\x0F\x8D\xD5\x00\x00\x00", 6);
+				//hooks::disableDetour(offsets::function::radarMinimap);
+			}
 		}
-		else if (!toggle::rapidFire && state::rapidFireIsOn)
+
+		if (toggle::rapidFire != state::rapidFireState)
 		{
-			state::rapidFireIsOn = !state::rapidFireIsOn;
-			data::game::localPlayer->wpnPtrSelect->ptrToGunInfo->shootDelay = dataWeapon::originalWpnFireRate;
+			state::rapidFireState = toggle::rapidFire;
+
+			if (toggle::rapidFire)
+			{
+				mem::nop((BYTE*)offsets::midFunction::rapidFire, 2);
+			}
+			else
+			{
+				mem::patch((BYTE*)offsets::midFunction::rapidFire, (BYTE*)"\x89\x08", 2);
+			}
 		}
 
 		if (toggle::health)
@@ -99,12 +106,5 @@ namespace hack
 		{
 			*data::game::localPlayer->wpnPtrGrenade->ptrToMag = 999;
 		}
-
-		if (state::firstRun)
-		{
-			dataWeapon::originalWpnFireRate = data::game::localPlayer->wpnPtrSelect->ptrToGunInfo->shootDelay;
-		}
-
-		state::firstRun = false;
 	}
 }
