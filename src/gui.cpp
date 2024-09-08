@@ -137,6 +137,7 @@ namespace gui
 				ImGui::Checkbox("Granade", &hack::toggle::granade);
 				ImGui::Checkbox("Rapid Fire", &hack::toggle::rapidFire);
 				ImGui::Checkbox("Full Auto", &hack::toggle::fullAuto);
+				ImGui::Checkbox("Grenade No Delay", &hack::toggle::grenadeNoDelay);
 
                 ImGui::EndTabItem();
             }

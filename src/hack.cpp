@@ -19,6 +19,7 @@ namespace hack
 
 		bool rapidFire{ false };
 		bool fullAuto{ false };
+		bool grenadeNoDelay{ false };
 
 		bool map{ false };
 		bool minimap{ false };
@@ -93,6 +94,17 @@ namespace hack
 			data::game::localPlayer->wpnPtrSniper->ptrToGunInfo->isAuto = false;
 			data::game::localPlayer->wpnPtrShotgun->ptrToGunInfo->isAuto = false;
 			data::game::localPlayer->wpnPtrPistol->ptrToGunInfo->isAuto = false;
+		}
+
+		if (toggle::grenadeNoDelay)
+		{
+			data::game::localPlayer->wpnPtrGrenade->ptrToGunInfo->shootDelay = 0;
+			data::game::localPlayer->wpnPtrGrenade->throwWait = 0;
+		}
+		else
+		{
+			data::game::localPlayer->wpnPtrGrenade->ptrToGunInfo->shootDelay = 650;
+			data::game::localPlayer->wpnPtrGrenade->throwWait = 325;
 		}
 
 		if (toggle::health)

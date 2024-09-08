@@ -13,6 +13,7 @@ namespace hack
 
 		extern bool rapidFire;
 		extern bool fullAuto;
+		extern bool grenadeNoDelay;
 
 		extern bool map;
 		extern bool minimap;
