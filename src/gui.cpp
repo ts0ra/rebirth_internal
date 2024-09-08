@@ -69,7 +69,7 @@ namespace gui
             {
                 if (ImGui::CollapsingHeader("aim"))
                 {
-                    ImGui::Checkbox("enable##aim", &hack::toggle::enableAimbot);
+                    ImGui::Checkbox("enable##aim", &hack::toggle::aimbot);
                 }
 
                 if (ImGui::CollapsingHeader("map"))
@@ -136,6 +136,7 @@ namespace gui
 				ImGui::Checkbox("Ammo", &hack::toggle::ammo);
 				ImGui::Checkbox("Granade", &hack::toggle::granade);
 				ImGui::Checkbox("Rapid Fire", &hack::toggle::rapidFire);
+				ImGui::Checkbox("Full Auto", &hack::toggle::fullAuto);
 
                 ImGui::EndTabItem();
             }

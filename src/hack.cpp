@@ -10,7 +10,7 @@ namespace hack
 {
 	namespace toggle
 	{
-		bool enableAimbot{ false };
+		bool aimbot{ false };
 
 		bool health{ false };
 		bool ammo{ false };
@@ -18,6 +18,7 @@ namespace hack
 		bool granade{ false };
 
 		bool rapidFire{ false };
+		bool fullAuto{ false };
 
 		bool map{ false };
 		bool minimap{ false };
@@ -25,13 +26,6 @@ namespace hack
 
 	namespace state
 	{
-		bool AimbotIsOn{ false };
-
-		bool healthIsOn{ false };
-		bool ammoIsOn{ false };
-		bool armorIsOn{ false };
-		bool granadeIsOn{ false };
-
 		bool rapidFireState{ false };
 
 		bool mapState{ false };
@@ -84,6 +78,21 @@ namespace hack
 			{
 				mem::patch((BYTE*)offsets::midFunction::rapidFire, (BYTE*)"\x89\x08", 2);
 			}
+		}
+
+		if (toggle::fullAuto)
+		{
+			data::game::localPlayer->wpnPtrCarbine->ptrToGunInfo->isAuto = true;
+			data::game::localPlayer->wpnPtrSniper->ptrToGunInfo->isAuto = true;
+			data::game::localPlayer->wpnPtrShotgun->ptrToGunInfo->isAuto = true;
+			data::game::localPlayer->wpnPtrPistol->ptrToGunInfo->isAuto = true;
+		}
+		else
+		{
+			data::game::localPlayer->wpnPtrCarbine->ptrToGunInfo->isAuto = false;
+			data::game::localPlayer->wpnPtrSniper->ptrToGunInfo->isAuto = false;
+			data::game::localPlayer->wpnPtrShotgun->ptrToGunInfo->isAuto = false;
+			data::game::localPlayer->wpnPtrPistol->ptrToGunInfo->isAuto = false;
 		}
 
 		if (toggle::health)
