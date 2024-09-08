@@ -168,6 +168,8 @@
     <ClCompile Include="imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="imgui\imgui_tables.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\console.cpp" />
+    <ClCompile Include="src\data.cpp" />
     <ClCompile Include="src\mem.cpp" />
     <ClCompile Include="src\esp.cpp" />
     <ClCompile Include="src\hack.cpp" />
@@ -197,6 +199,7 @@
     <ClInclude Include="src\hooks.h" />
     <ClInclude Include="src\gui.h" />
     <ClInclude Include="src\offsets.h" />
+    <ClInclude Include="src\shared.h" />
     <ClInclude Include="src\struct.h" />
     <ClInclude Include="src\types.h" />
     <ClInclude Include="src\utils.h" />

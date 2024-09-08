@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <Windows.h>
+#include <array>
 
 // Constants
 constexpr float RAD = 0.01745329252f;
@@ -108,12 +109,12 @@ struct Quaternion {
     Quaternion& roll(float roll) noexcept;
 };
 
-// CustomHook
-struct customHook
+// TrampolineHook
+struct TrampolineHook
 {
-	std::uintptr_t address;
-	BYTE originalBytes[16];
-    BYTE* gateaway;
-    int length;
-    std::uintptr_t dst;
+	std::uintptr_t targetFunction;
+    std::uintptr_t gateawayFunction;
+    std::uintptr_t hookFunction;
+    std::array<BYTE, 16> stolenBytes;
+	unsigned int size;
 };

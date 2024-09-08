@@ -5,21 +5,8 @@
 
 namespace console
 {
-	inline FILE* fDummy = nullptr; // FILE pointer for redirection
+	extern FILE* fDummy;
 
-	void initConsole()
-	{
-		AllocConsole();
-		freopen_s(&fDummy, "CONOUT$", "w", stdout);
-	}
-
-	void shutdownConsole()
-	{
-		if (fDummy != nullptr)
-		{
-			fclose(fDummy);
-			fDummy = nullptr;  // Avoid dangling pointer
-		}
-		FreeConsole();
-	}
+	void initConsole();
+	void shutdownConsole();
 }

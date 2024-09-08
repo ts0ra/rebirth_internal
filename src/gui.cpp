@@ -169,7 +169,7 @@ namespace gui
     void toggleMenu()
     {
         showMenu = !showMenu;
-        ImGui::GetIO().WantCaptureMouse = showMenu;
-        hooks::unhookMouse(!showMenu);
+		hook::data::SDL_SetRelativeMouseMode_o(!showMenu);
+        //ImGui::GetIO().WantCaptureMouse = showMenu;
     }
 }

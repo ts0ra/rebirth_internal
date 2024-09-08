@@ -1,4 +1,5 @@
 // paired header file
+#include "shared.h"
 
 // other header files
 #include "data.h"
@@ -13,13 +14,10 @@
 #include <thread>
 #include <iostream>
 
-// Forward
-void mainThread(const HINSTANCE hinstDLL);
-
 BOOL WINAPI DllMain(
     _In_ HINSTANCE hinstDLL,
-    _In_ DWORD     fdwReason,
-    _In_ LPVOID    lpvReserved
+    _In_ DWORD   fdwReason,
+    _In_ LPVOID  lpvReserved
 )
 {
     if (fdwReason == DLL_PROCESS_ATTACH)
@@ -42,26 +40,33 @@ BOOL WINAPI DllMain(
     return TRUE;
 }
 
-void mainThread(const HINSTANCE hinstDLL)
+// Forward
+void mainThread(HINSTANCE hinstDLL)
 {
     console::initConsole();
-	hooks::initHooks();
+    data::getData((HMODULE)hinstDLL);
+    data::game::getData();
 
-	hooks::createHooks();
-	hooks::enableHooks();
-
-    while (!GetAsyncKeyState(VK_END) & 1)
+    hook::initHooks();
+    hook::createHooks();
+    hook::enableHooks();
+    /*while (!GetAsyncKeyState(VK_END) & 1)
     {
-		if (GetAsyncKeyState(VK_INSERT) & 1)
-		{
+        if (GetAsyncKeyState(VK_INSERT) & 1)
+        {
             gui::toggleMenu();
-		}
+        }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
-   
-	hooks::shutdownHooks();
+
+    hook::shutdownHooks();
     console::shutdownConsole();
 
-    FreeLibraryAndExitThread(hinstDLL, 0);
+    FreeLibraryAndExitThread(hinstDLL, 0);*/
+}
+
+void exitThread()
+{
+    FreeLibraryAndExitThread(data::hModule, 0);
 }

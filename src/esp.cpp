@@ -45,7 +45,7 @@ namespace esp
 		{
 			for (int i = 0; i < *data::game::totalPlayer; ++i)
 			{
-				if (data::game::playerList == nullptr) { data::renewData(); continue; } // renew data if playerList is invalid
+				if (data::game::playerList == nullptr) { data::game::getData(); continue; } // renew data if playerList is invalid
 				
 				dataESP::targetPlayer = data::game::playerList->players[i];
 

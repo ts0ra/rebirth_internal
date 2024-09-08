@@ -3,55 +3,49 @@
 #include "offsets.h"
 #include "types.h"
 
-#include "../minhook/MinHook.h"
-
 #include <vector>
 
-//using WndProc = LRESULT(CALLBACK*)(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 using wglSwapBuffers = BOOL(__stdcall*)(HDC hdc);
 using SDL_SetRelativeMouseMode = int(__cdecl*)(unsigned int mode);
 using mousemove = void(__fastcall*)(int idx, int idy);
-using map = void(*)();
-using minimap = void(*)();
+using midFunction = void(*)();
 
-namespace hooks
+namespace hook
 {
-	//extern MH_STATUS initSuccess;
+	namespace data
+	{
+		extern bool unloadState;
+		extern bool readyToUnload;
+		extern bool isUnload;
 
-	extern SDL_SetRelativeMouseMode unhookMouse;
+		extern std::vector<TrampolineHook> hookList;
 
-	extern wglSwapBuffers originalSwapBuffers;
-	extern wglSwapBuffers targetSwapBuffers;
+		extern SDL_SetRelativeMouseMode SDL_SetRelativeMouseMode_o;
 
-	extern WNDPROC originalWndProc;
+		extern wglSwapBuffers wglSwapBuffers_o;
+		extern wglSwapBuffers wglSwapBuffers_t;
 
-	//extern WndProc originalWndProc;
-	//extern const WndProc targetWndProc;
-
-	/*extern mousemove originalMouseMove;
-	extern const mousemove targetMouseMove;*/
-
-	//extern const map targetMap;
-	//extern const minimap targetMinimap;
-
-	extern std::vector<customHook> hookStorage;
+		extern WNDPROC WndProc_o;
+	}
 
 	void initHooks();
 	void createHooks();
 	void enableHooks();
 	void shutdownHooks();
-
-	bool detour(BYTE* src, BYTE* dst, const uintptr_t len);
-	// make disable state
-	LPVOID trampoline(BYTE* src, BYTE* dst, const uintptr_t len);
-	void enableDetour(std::uintptr_t address = 0);
-	void disableDetour(std::uintptr_t address = 0);
-	void unhookDetour();
 }
 
-namespace detours
+namespace trampoline
 {
-	BOOL __stdcall detourSwapBuffers(HDC hdc);
-	BOOL WINAPI detourWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-	void __fastcall detourMouseMove(int idx, int idy);
+	namespace function
+	{
+		BOOL __stdcall wglSwapBuffers_hk(HDC hdc);
+		BOOL WINAPI WndProc_hk(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+		void __fastcall mouseMove_hk(int idx, int idy);
+	}
+
+	bool detour(std::uintptr_t src, std::uintptr_t dst, unsigned int size);
+	std::uintptr_t create(std::uintptr_t src, std::uintptr_t dst, unsigned int size);
+	bool enable(std::uintptr_t src = 0);
+	bool disable(std::uintptr_t src = 0);
+	bool unhook();
 }
