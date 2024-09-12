@@ -70,6 +70,10 @@ namespace gui
                 if (ImGui::CollapsingHeader("aim"))
                 {
                     ImGui::Checkbox("enable##aim", &hack::toggle::aimbot);
+                    ImGui::SetNextItemWidth(-FLT_MIN);
+                    ImGui::SliderFloat("##smoothing factor", &esp::setting::smoothFactor, 1.0f, 25.0f, "smoothing: %.3f", ImGuiSliderFlags_AlwaysClamp);
+                    ImGui::SetNextItemWidth(-FLT_MIN);
+                    ImGui::SliderFloat("##fov degree", &esp::setting::fovDegree, 0.0f, 90.0f, "fov: %.3f", ImGuiSliderFlags_AlwaysClamp);
                 }
 
                 if (ImGui::CollapsingHeader("map"))

@@ -41,7 +41,11 @@ float Vector3::distance(const Vector3& other, Vector3& temp) const noexcept {
     temp = *this; temp.subtract(other);
     return temp.magnitude();
 }
-float Vector3::squaredDistance(const Vector3& other) const noexcept { Vector3 temp = *this; temp.subtract(other); return temp.squaredLength(); }
+float Vector3::squaredDistance(const Vector3& other) const noexcept { 
+    Vector3 temp = *this; 
+    temp.subtract(other); 
+    return temp.squaredLength(); 
+}
 float Vector3::distanceXY(const Vector3& other) const noexcept {
     float dx = other.x - x, dy = other.y - y;
     return std::sqrt(dx * dx + dy * dy);

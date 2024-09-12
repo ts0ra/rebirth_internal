@@ -3,6 +3,8 @@
 #include "data.h"
 #include "game_struct.h"
 #include "mem.h"
+#include "utils.h"
+#include "esp.h"
 
 #include <iostream>
 
@@ -126,6 +128,54 @@ namespace hack
 		if (toggle::granade)
 		{
 			*data::game::localPlayer->wpnPtrGrenade->ptrToMag = 999;
+		}
+
+		if (toggle::aimbot)
+		{
+			if (!data::game::checkData()) data::game::getData();
+			if (data::game::localPlayer->state == 0) // local alive
+			{
+				float smallestAngleDifference = FLT_MAX; // Initialize with the maximum possible float value
+				Vector3 closestTargetViewAngle;
+				Vector3 localViewAngle = Vector3(data::game::localPlayer->yaw, data::game::localPlayer->pitch, data::game::localPlayer->roll);
+
+				for (int i = 0; i < *data::game::totalPlayer; ++i)
+				{
+					playerEnt* tempPlayer = data::game::playerList->players[i];
+
+					if (tempPlayer == nullptr) continue; // skip if invalid player
+					if (utils::isTeamGameMode(*data::game::gameMode) &&
+						tempPlayer->teamSide == data::game::localPlayer->teamSide) continue; // skip if player is on the same team
+					if (tempPlayer->state == 1) continue; // skip if player is dead
+
+					Vector3 tempPlayerHeadPos = tempPlayer->headPos;
+					Vector3 targetViewAngle = utils::calculateAngle(data::game::localPlayer->headPos, tempPlayerHeadPos);
+					Vector3 targetViewDir = utils::anglesToDirection(tempPlayer->yaw, tempPlayer->pitch);
+
+					float fovX = esp::setting::fovDegree; // Horizontal FOV
+
+					float fovY = utils::calculateVerticalFOV(fovX, data::widthGame, data::heightGame);
+					float fovDiameter = utils::calculateFOVCircleDiameter(fovX, fovY, data::widthGame, data::heightGame);
+
+					if (utils::isEnemyWithinFOV(tempPlayer->headPos, fovDiameter))
+					{
+						float angleDifference = utils::getAngleDifference(localViewAngle.y, targetViewAngle.y) +
+												utils::getAngleDifference(localViewAngle.x, targetViewAngle.x);
+
+						if (angleDifference < smallestAngleDifference)
+						{
+							smallestAngleDifference = angleDifference;
+							closestTargetViewAngle = targetViewAngle;
+						}
+					}
+				}
+				if ((smallestAngleDifference < FLT_MAX) && (GetAsyncKeyState(VK_RBUTTON) & 0x8000))
+				{
+					Vector3 smoothedAngles = utils::smoothAim(localViewAngle, closestTargetViewAngle, esp::setting::smoothFactor);
+					data::game::localPlayer->yaw = smoothedAngles.x;
+					data::game::localPlayer->pitch = smoothedAngles.y;
+				}
+			}
 		}
 	}
 }

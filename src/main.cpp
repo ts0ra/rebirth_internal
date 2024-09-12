@@ -14,6 +14,14 @@
 #include <thread>
 #include <iostream>
 
+// Function-like macro that evaluates to true if the type (or object) is equal to or smaller than
+// the size of two memory addresses
+// can be used to determine if a type (or object) is cheap to copy accordingly
+// An object of type T is cheap to copy if sizeof(T) <= 2 * sizeof(void*) and has no additional setup costs.
+#define isSmall(T) (sizeof(T) <= 2 * sizeof(void*))
+
+// Prefer passing strings using std::string_view (by value) instead of const std::string&, unless your function calls other functions that require C-style strings or std::string parameters.
+
 BOOL WINAPI DllMain(
     _In_ HINSTANCE hinstDLL,
     _In_ DWORD   fdwReason,

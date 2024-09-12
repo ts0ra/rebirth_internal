@@ -31,6 +31,9 @@ namespace esp
 		extern int fovType;
 		extern float fovThickness;
 		extern float fovRounding;
+		extern float fovDegree;
+
+		extern float smoothFactor;
 	}
 
 	namespace dataESP

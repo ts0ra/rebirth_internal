@@ -30,6 +30,9 @@ namespace esp
 		int fovType{ 0 };
 		float fovThickness{ 1.0f };
 		float fovRounding{ 0.0f };
+		float fovDegree{ 90.0f };
+
+		float smoothFactor{ 5.0f };
 	}
 
 	namespace dataESP
@@ -45,7 +48,7 @@ namespace esp
 		{
 			for (int i = 0; i < *data::game::totalPlayer; ++i)
 			{
-				if (data::game::playerList == nullptr) { data::game::getData(); continue; } // renew data if playerList is invalid
+				if (!data::game::checkData()) { data::game::getData(); continue; } // renew data if playerList is invalid
 				
 				dataESP::targetPlayer = data::game::playerList->players[i];
 
@@ -204,9 +207,14 @@ namespace esp
 	{
 		if (setting::fovType == 0)
 		{
+			float fovX = setting::fovDegree; // Horizontal FOV
+
+			float fovY = utils::calculateVerticalFOV(fovX, data::widthGame, data::heightGame);
+			float fovDiameter = utils::calculateFOVCircleDiameter(fovX, fovY, data::widthGame, data::heightGame);
+
 			ImGui::GetBackgroundDrawList()->AddCircle(
 				ImVec2(data::widthGame / 2.0f, data::heightGame / 2.0f),
-				20.0f, // change this later after implementing aimbot fov (that 20.0f value)
+				fovDiameter / 2.0f, // change this later after implementing aimbot fov (that 20.0f value)
 				static_cast<ImU32>(ImColor(esp::color::fov[0], esp::color::fov[1], esp::color::fov[2])),
 				NULL,
 				esp::setting::fovThickness
@@ -214,9 +222,14 @@ namespace esp
 		}
 		else
 		{
+			float fovX = setting::fovDegree; // Horizontal FOV
+
+			float fovY = utils::calculateVerticalFOV(fovX, data::widthGame, data::heightGame);
+			float fovDiameter = utils::calculateFOVCircleDiameter(fovX, fovY, data::widthGame, data::heightGame);
+
 			ImGui::GetBackgroundDrawList()->AddRect(
-				ImVec2(data::widthGame / 2.0f - 20.0f, data::heightGame / 2.0f - 20.0f), // change this later after implementing aimbot fov (that 20 value)
-				ImVec2(data::widthGame / 2.0f + 20.0f, data::heightGame / 2.0f + 20.0f), // change this later after implementing aimbot fov (that 20 value)
+				ImVec2(data::widthGame / 2.0f - 20.0f, data::heightGame / 2.0f - fovDiameter / 2.0f), // change this later after implementing aimbot fov (that 20 value)
+				ImVec2(data::widthGame / 2.0f + 20.0f, data::heightGame / 2.0f + fovDiameter / 2.0f), // change this later after implementing aimbot fov (that 20 value)
 				static_cast<ImU32>(ImColor(esp::color::fov[0], esp::color::fov[1], esp::color::fov[2])),
 				esp::setting::fovRounding
 			);
